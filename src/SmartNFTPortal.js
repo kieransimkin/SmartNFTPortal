@@ -7,8 +7,12 @@ const SmartNFTPortal = (props) => {
     const {smartImports, metadata, style, loading, random} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
-    if (!loadingContent || loadingContent=='') { 
-        loadingContent='Loading...';
+    if (!loadingContent) { 
+        loadingContent=(
+            <>
+                Loading...
+            </>
+        );
     }
     if (!ROOT || ROOT=='') { 
         ROOT='/api';
@@ -535,7 +539,7 @@ SmartNFTPortal.propTypes = {
     loading: PropTypes.bool.isRequired,
     smartImports: PropTypes.object.isRequired,
     metadata: PropTypes.object.isRequired,
-    loadingContent: PropTypes.string,
+    loadingContent: PropTypes.object,
     apiRoot: PropTypes.string
   };
 export default SmartNFTPortal;
