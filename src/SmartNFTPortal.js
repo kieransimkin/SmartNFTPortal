@@ -1,6 +1,7 @@
 
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
+import * as React from "react";
 
 const SmartNFTPortal = (props) => { 
     const {smartImports, metadata, style, loading, random} = props;
