@@ -299,9 +299,10 @@ const SmartNFTPortal = (props) => {
     }
     librariesHTML+=getPortalAPIScripts(smartImports, metadata);
     if (metadata && metadata.files && metadata.files[0]) { 
-        console.log('logging files');
-        console.log(metadata.files);
-
+        let files = metadata.files[0].src;
+        if (Array.isArray(files)) { 
+            files = files.join('');
+        }
         let blob = dataURItoString(metadata.files[0].src); // Todo - this line and the line above assume that the text/html program code will be the first element in the files array
         blob = '<html data-id="'+random+'" ><head>'+librariesHTML+'</head><body style="padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
         src='data:text/html,'+encodeURIComponent(blob)
