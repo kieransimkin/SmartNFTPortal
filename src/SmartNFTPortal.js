@@ -38,7 +38,8 @@ const SmartNFTPortal = (props) => {
         // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = Buffer.from(dataURI.split(',')[1], 'hex').toString();
+            
+            byteString = atob(dataURI.split(',')[1]);
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
