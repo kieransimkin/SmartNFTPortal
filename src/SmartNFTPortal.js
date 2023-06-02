@@ -31,18 +31,14 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
-    function utf8_to_b64( str ) {
-        return window.btoa(unescape(encodeURIComponent( str )));
-    }
-    
-    function b64_to_utf8( str ) {
-        return decodeURIComponent(escape(window.atob( str )));
-    }
-    
+    function UnicodeDecodeB64(str) {
+        return decodeURIComponent(atob(str));
+      }
+      
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = atob(dataURI.split(',')[1]);
+            byteString = UnicodeDecodeB64(dataURI.split(',')[1]);
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
