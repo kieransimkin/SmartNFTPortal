@@ -36,7 +36,12 @@ const SmartNFTPortal = (props) => {
     const dataURItoString = (dataURI) => {
         // convert base64 to raw binary data held in a string
         // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-        var byteString = decodeURIComponent(dataURI.split(',')[1]);
+        var byteString = '';
+        if (dataURI.split(',')[0].includes('base64')) { 
+            byteString = Buffer.from(dataURI.split(',')[1], 'hex').toString();
+        } else { 
+            byteString = decodeURIComponent(dataURI.split(',')[1]);
+        }
       
         // separate out the mime component
         var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
