@@ -42,7 +42,7 @@ const SmartNFTPortal = (props) => {
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = b64_to_utf8(dataURI.split(',')[1]);
+            byteString = btoa(dataURI.split(',')[1]);
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
