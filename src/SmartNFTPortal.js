@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as React from "react";
 
 const SmartNFTPortal = (props) => { 
-    const {smartImports, metadata, style, loading, random} = props;
+    const {smartImports, metadata, style, loading, random, className} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -299,13 +299,16 @@ const SmartNFTPortal = (props) => {
     }
     librariesHTML+=getPortalAPIScripts(smartImports, metadata);
     if (metadata && metadata.files && metadata.files[0]) { 
-        let blob = dataURItoString(metadata.files[0].src);
+        console.log('logging files');
+        console.log(metadata.files);
+
+        let blob = dataURItoString(metadata.files[0].src); // Todo - this line and the line above assume that the text/html program code will be the first element in the files array
         blob = '<html data-id="'+random+'" ><head>'+librariesHTML+'</head><body style="padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
         src='data:text/html,'+encodeURIComponent(blob)
     }
     // Here the actual iframe that does all the work:
     return (
-        <iframe ref={iFrameRef} style={style} sandbox="allow-scripts" src={src} />
+        <iframe ref={iFrameRef} style={style} className={className} sandbox="allow-scripts" src={src} />
     );
 }
 
@@ -540,6 +543,7 @@ SmartNFTPortal.propTypes = {
     smartImports: PropTypes.object.isRequired,
     metadata: PropTypes.object.isRequired,
     loadingContent: PropTypes.object,
-    apiRoot: PropTypes.string
+    apiRoot: PropTypes.string,
+    className: PropTypes.string
   };
 export default SmartNFTPortal;
