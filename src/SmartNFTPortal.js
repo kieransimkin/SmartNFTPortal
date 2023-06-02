@@ -31,11 +31,17 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
-    
+    const toBinary = (string) => {
+        const codeUnits = new Uint16Array(string.length);
+        for (let i = 0; i < codeUnits.length; i++) {
+          codeUnits[i] = string.charCodeAt(i);
+        }
+        return btoa(String.fromCharCode(...new Uint8Array(codeUnits.buffer)));
+      }
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = Buffer.from(dataURI.split(',')[1], 'base64').toString();
+            byteString = toBinary(dataURI.split(',')[1]);
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
