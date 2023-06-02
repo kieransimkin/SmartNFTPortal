@@ -42,7 +42,7 @@ const SmartNFTPortal = (props) => {
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
-      
+        console.log(byteString);
         // separate out the mime component
         var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
       
