@@ -30,39 +30,22 @@ const SmartNFTPortal = (props) => {
       
     if (loading) { 
         return loadingContent;
-        //return <CircularProgress style={{marginTop: '2em', marginLeft: 'auto', marginRight: 'auto'}} />;
     }
     
     const dataURItoString = (dataURI) => {
-        // convert base64 to raw binary data held in a string
-        // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            
             byteString = atob(dataURI.split(',')[1]);
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
-        console.log(byteString);
-        // separate out the mime component
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
-      
-        // write the bytes of the string to an ArrayBuffer
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0] // Not needed but extracted anyway
         var ab = new ArrayBuffer(byteString.length);
-      
-        // create a view into the buffer
         var ia = new Uint8Array(ab);
-      
-        // set the bytes of the buffer to the correct values
         for (var i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
-      
-        // write the ArrayBuffer to a blob, and you're done
-        var blob = new Blob([ab], {type: mimeString});
-        
         return new TextDecoder().decode(ia);
-      
     }
     const postData = async (url = '', inData) => {
         return fetch(ROOT + url, {
@@ -310,7 +293,7 @@ const SmartNFTPortal = (props) => {
             newSrc = newSrc.join('');
         }
         let blob = dataURItoString(newSrc); 
-        blob = '<html data-id="'+random+'" ><head>'+librariesHTML+'</head><body style="padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
+        blob = '<html data-id="'+random+'" ><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
         src='data:text/html,'+encodeURIComponent(blob)
     }
     // Here the actual iframe that does all the work:
