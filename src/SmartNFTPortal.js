@@ -31,14 +31,11 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
-    function UnicodeDecodeB64(str) {
-        return decodeURIComponent(atob(str));
-      }
       
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = atob(dataURI.split(',')[1]);
+            byteString = atob(dataURI.split(',')[1]); // This does not support unicode, but I haven't been able to find a reliable routine to decode utf-8 base64
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
