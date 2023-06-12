@@ -453,7 +453,7 @@ const getPortalAPIScripts = (smartImports, metadata) => {
                     which=window.cardano.nft._data.ownerAddr;
                 }
                 if (page==0) { 
-                    return {transactions: window.cardano.nft._data.transactions[which], fetchedAt: window.cardano.nft._data.fetchedAt};
+                    return {transactions: window.cardano.nft._data.transactions[which]||[], fetchedAt: window.cardano.nft._data.fetchedAt};
                 } else if (window.cardano.nft._data.transactions[which]) { 
                     return new Promise(async (resolve, reject) => { 
                         const messageHandler = (e) => { 
@@ -477,7 +477,7 @@ const getPortalAPIScripts = (smartImports, metadata) => {
                     which=window.cardano.nft._data.ownerAddr;
                 }
                 if (page==0) { 
-                    return {tokens: window.cardano.nft._data.tokens[which], fetchedAt: window.cardano.nft._data.fetchedAt};
+                    return {tokens: window.cardano.nft._data.tokens[which]||[], fetchedAt: window.cardano.nft._data.fetchedAt};
                 } else if (window.cardano.nft._data.tokens[which]) { 
                     return new Promise(async (resolve, reject) => { 
                         const messageHandler = (e) => { 
@@ -501,7 +501,7 @@ const getPortalAPIScripts = (smartImports, metadata) => {
                     which=window.cardano.nft._data.ownerAddr;
                 }
                 if (page==0) { 
-                    return {utxos: window.cardano.nft._data.utxos[which], fetchedAt: window.cardano.nft._data.fetchedAt};
+                    return {utxos: window.cardano.nft._data.utxos[which]||[], fetchedAt: window.cardano.nft._data.fetchedAt};
                 } else if (window.cardano.nft._data.utxos[which]) { 
                     return new Promise(async (resolve, reject) => { 
                         const messageHandler = (e) => { 
@@ -524,7 +524,6 @@ const getPortalAPIScripts = (smartImports, metadata) => {
     `;
     return ret;
 }
-
 
 SmartNFTPortal.propTypes = {
     style: PropTypes.object,
