@@ -579,7 +579,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 parent.postMessage({request:'touchCancel',event:JSON.stringify(e)},'*');
             });
             `:''}
-            ${onScroll ? `document.addEventListener('scroll',(e) => { 
+            ${onScroll ? `document.addEventListener('wheel',(e) => { 
                 parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
             });
             `:''}
