@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as React from "react";
 
 const SmartNFTPortal = (props) => { 
-    const {smartImports, metadata, style, loading, random, className} = props;
+    const {smartImports, metadata, style, loading, random, className, onFocus, onBlur} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -31,7 +31,15 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
-      
+    if (iFrameRef?.current && iFrameRef?.current?.contentWindow) { 
+        iFrameRef.current.contentWindow.onfocus=() => { 
+            console.log('Smart NFT focus');
+            onFocus();
+        }
+        iFrameRef.current.contentWindow.onblur=() => { 
+            onBlur();
+        }
+    }
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
@@ -533,6 +541,8 @@ SmartNFTPortal.propTypes = {
     metadata: PropTypes.object.isRequired,
     loadingContent: PropTypes.object,
     apiRoot: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.fund
   };
 export default SmartNFTPortal;
