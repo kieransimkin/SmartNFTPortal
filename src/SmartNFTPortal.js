@@ -10,13 +10,15 @@ const SmartNFTPortal = (props) => {
         style, 
         loading, 
         random, 
-        activeHtmlStyle, 
         inactiveHtmlStyle, 
         className, 
         onFocus, 
         onBlur, 
         onMouseOut, 
-        onMouseOver} = props;
+        onMouseOver,
+        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel
+    } = props;
+    
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
