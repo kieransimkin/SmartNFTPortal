@@ -20,6 +20,7 @@ const SmartNFTPortal = (props) => {
     } = props;
     
     let loadingContent = props.loadingContent;
+    const [focused, setFocused] = useState(false);
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
         loadingContent=(
@@ -35,18 +36,20 @@ const SmartNFTPortal = (props) => {
     let src='';
     let librariesHTML ='';
     const doFocus = () => { 
-        if (document.activeElement === iFrameRef.current) {
+        if (document.activeElement === iFrameRef.current && !focused) {
             if (!iFrameRef.current) return; // user browsed away
             iFrameRef.current.contentWindow.postMessage({request: 'focus'},'*');   
+            setFocused(true);
             if (onFocus) {
                 onFocus();
             }
         }
     }
     const doBlur = () => {
-        if (document.activeElement !== iFrameRef.current) {
+        if (document.activeElement !== iFrameRef.current && focused) {
             if (!iFrameRef.current) return; // user browsed away
             iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*');   
+            setFocused(false);
             if (onBlur) { 
                 onBlur();
             }
@@ -145,6 +148,7 @@ const SmartNFTPortal = (props) => {
             case 'escape':
                 if (!iFrameRef.current) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*'); 
+                setFocused(false);
                 if (onBlur) { 
                     onBlur(e);
                 }
