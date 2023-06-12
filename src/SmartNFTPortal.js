@@ -31,15 +31,21 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
-    if (iFrameRef?.current && iFrameRef?.current?.contentWindow) { 
-        iFrameRef.current.contentWindow.onfocus=() => { 
-            console.log('Smart NFT focus');
-            onFocus();
-        }
-        iFrameRef.current.contentWindow.onblur=() => { 
-            onBlur();
-        }
-    }
+    useEffect(()=> { 
+        const listener = window.addEventListener('blur', () => {
+            console.log(document.activeElement);
+            console.log(iFrameRef.current);
+            if (document.activeElement === document.querySelector('iframe')) {
+              console.log('clicked on iframe')
+            }
+            
+          });
+        const l = window.addEventListener('focus', () => { 
+            if (document.activeElement !== document.querySelector('iframe')) {
+
+            }
+         });
+    },[]);
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
