@@ -1,6 +1,6 @@
 ## `<SmartNFTPortal>`
 
-A `<SmartNFTPortal>` is a React control which renders Smart NFTs in the browser. This widget takes care of the `&lt;iframe&gt;` sandbox, and provides the Smart NFT Javascript API to any NFT which is rendered inside it. This provides a great deal of extra power to Javascript NFTs, enabling them to respond to changes on the blockchain, as well as load additional assets such as Javascript libraries, images, and other data directly from the blockchain. 
+A `<SmartNFTPortal>` is a React control which renders Smart NFTs in the browser. This widget takes care of the `<frame>` sandbox, and provides the Smart NFT Javascript API to any NFT which is rendered inside it. This provides a great deal of extra power to Javascript NFTs, enabling them to respond to changes on the blockchain, as well as load additional assets such as Javascript libraries, images, and other data directly from the blockchain. 
 
 While this API provides a lot of additional functionality to NFTs inside the sandbox, it's important to note that they are still fully sandboxed - this control handles all the necessary inter-process communication between the sandboxed iframe and its parent document using the sendMessage() API. 
 
@@ -13,6 +13,9 @@ While this API provides a lot of additional functionality to NFTs inside the san
 [libcip54 provides the backend queries necessary to support this API on Cardano](https://github.com/kieransimkin/libcip54).
 
 [Click here to read the Cardano Improvement Proposal](https://cips.cardano.org/cips/cip54)
+
+This control, and the API in general is intended to be applicable to any UTXO blockchain - in particular if there's interest it may be ported to Bitcoin BRC20, and Ergo native tokens too. 
+Currently, libcip54 provides the backend functionality for Cardano, but it would be a simple matter to port this library to other blockchains (the queries will just need to be tweaked for different chain indexers)
 
 If you make anything cool, feel free to send me some - my Adahandle is `$kieran`
 
