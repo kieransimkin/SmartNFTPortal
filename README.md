@@ -4,12 +4,17 @@ A `<SmartNFTPortal>` is a React control which renders Smart NFTs in the browser.
 
 While this API provides a lot of additional functionality to NFTs inside the sandbox, it's important to note that they are still fully sandboxed - this control handles all the necessary inter-process communication between the sandboxed iframe and its parent document using the sendMessage() API. 
 
+[The first Smart NFT collection](https://www.plutus.art/collection/smartlife)
+
 [Click here to see it in action in the Smart NFT Playground](https://nft-playground.dev/).
 
 [The source code of the Smart NFT Playground is also available](https://github.com/kieransimkin/cip54-playground).
 
 [libcip54 provides the backend queries necessary to support this API on Cardano](https://github.com/kieransimkin/libcip54).
 
+[Click here to read the Cardano Improvement Proposal](https://cips.cardano.org/cips/cip54)
+
+If you make anything cool, feel free to send me some - my Adahandle is `$kieran`
 
 ### Installing
 
