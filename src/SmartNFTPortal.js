@@ -27,10 +27,8 @@ const SmartNFTPortal = (props) => {
             window.removeEventListener("message", onMessage)
         }
       }, []);
+     
       
-    if (loading) { 
-        return loadingContent;
-    }
     useEffect(()=> { 
         const listener = window.addEventListener('blur', () => {
             console.log(document.activeElement);
@@ -46,6 +44,9 @@ const SmartNFTPortal = (props) => {
             }
          });
     },[]);
+    if (loading) { 
+        return loadingContent;
+    }
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
