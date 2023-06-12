@@ -16,7 +16,7 @@ const SmartNFTPortal = (props) => {
         onBlur, 
         onMouseOut, 
         onMouseOver,
-        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady
+        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
     } = props;
     
     let loadingContent = props.loadingContent;
@@ -171,6 +171,8 @@ const SmartNFTPortal = (props) => {
                 if (onTouchMove) return onTouchMove(e.data.event);
             case 'touchCancel':
                 if (onTouchCancel) return onTouchCancel(e.data.event);
+            case 'scroll':
+                if (onScroll) return onScroll(e.data.event);
             default:
                 return;
         }
@@ -384,7 +386,7 @@ const SmartNFTPortal = (props) => {
 
 // This is the API that's provided to the child iframe:
 const getPortalAPIScripts = (smartImports, metadata, props) => { 
-    const  {onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, activeHtmlStyle, inactiveHtmlStyle,focus} = props;
+    const  {onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, activeHtmlStyle, inactiveHtmlStyle,focus, onScroll} = props;
     let ret="<script>\n";
     ret+="if (!window.cardano) window.cardano={};\n";
     ret+="if (!window.cardano.nft) window.cardano.nft={};\n";
@@ -577,6 +579,10 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 parent.postMessage({request:'touchCancel',event:JSON.stringify(e)},'*');
             });
             `:''}
+            ${onScroll ? `window.addEventListener('scroll',(e) => { 
+                parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
+            });
+            `:''}
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
             }
@@ -677,6 +683,7 @@ SmartNFTPortal.propTypes = {
     inactiveHtmlStyle: PropTypes.string,
     activeHtmlStyle: PropTypes.string,
     onReady:PropTypes.func,
+    onScroll:PropTypes.func,
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
     onClick:PropTypes.func,
