@@ -567,8 +567,8 @@ const getPortalAPIScripts = (smartImports, metadata, activeHtmlStyle, inactiveHt
 SmartNFTPortal.propTypes = {
     style: PropTypes.object,
     random: PropTypes.number,
-    inactiveHtmlStyle: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
-    activeHtmlStyle: PropTypes.oneOfType([PropTypes.string,PropTypes.object]),
+    inactiveHtmlStyle: PropTypes.string,
+    activeHtmlStyle: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     smartImports: PropTypes.object.isRequired,
     metadata: PropTypes.object.isRequired,
