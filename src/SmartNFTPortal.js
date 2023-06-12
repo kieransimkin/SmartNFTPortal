@@ -521,43 +521,43 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             }
             window.addEventListener('message',focusBlurHandler);
             ${onClick ? `window.addEventListener('click',(e) => { 
-                parent.postMessage({request:'click',event:e},'*');
+                parent.postMessage({request:'click',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseDown ? `window.addEventListener('mousedown',(e) => { 
-                parent.postMessage({request:'mousedown',event:e},'*');
+                parent.postMessage({request:'mousedown',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseUp ? `window.addEventListener('mouseup',(e) => { 
-                parent.postMessage({request:'mousedown',event:e},'*');
+                parent.postMessage({request:'mousedown',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseMove ? `window.addEventListener('mousemove',(e) => { 
-                parent.postMessage({request:'mousemove',event:e},'*');
+                parent.postMessage({request:'mousemove',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onContextMenu ? `window.addEventListener('contextmenu',(e) => { 
-                parent.postMessage({request:'contextmenu',event:e},'*');
+                parent.postMessage({request:'contextmenu',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onDblClick ? `window.addEventListener('dblclick',(e) => { 
-                parent.postMessage({request:'dblclick',event:e},'*');
+                parent.postMessage({request:'dblclick',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchStart ? `window.addEventListener('touchstart',(e) => { 
-                parent.postMessage({request:'touchstart',event:e},'*');
+                parent.postMessage({request:'touchstart',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchEnd ? `window.addEventListener('touchend',(e) => { 
-                parent.postMessage({request:'touchend',event:e},'*');
+                parent.postMessage({request:'touchend',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchMove ? `window.addEventListener('touchmove',(e) => { 
-                parent.postMessage({request:'touchmove',event:e},'*');
+                parent.postMessage({request:'touchmove',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchCancel ? `window.addEventListener('touchcancel',(e) => { 
-                parent.postMessage({request:'touchmove',event:e},'*');
+                parent.postMessage({request:'touchmove',event:JSON.stringify(e)},'*');
             });
             `:''}
             window.cardano.nft.getOwner = async () => { 
