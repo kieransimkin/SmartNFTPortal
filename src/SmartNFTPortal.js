@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as React from "react";
 
 const SmartNFTPortal = (props) => { 
-    const {smartImports, metadata, style, loading, random, className, onFocus, onBlur} = props;
+    const {smartImports, metadata, style, loading, random, htmlStyle, className, onFocus, onBlur} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -313,7 +313,7 @@ const SmartNFTPortal = (props) => {
             newSrc = newSrc.join('');
         }
         let blob = dataURItoString(newSrc); 
-        blob = '<html data-id="'+random+'" ><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
+        blob = '<html data-id="'+random+'" style="'+htmlStyle+'"><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
         src='data:text/html,'+encodeURIComponent(blob)
     }
     // Here the actual iframe that does all the work:
@@ -553,6 +553,7 @@ const getPortalAPIScripts = (smartImports, metadata) => {
 SmartNFTPortal.propTypes = {
     style: PropTypes.object,
     random: PropTypes.number,
+    htmlStyle: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     smartImports: PropTypes.object.isRequired,
     metadata: PropTypes.object.isRequired,
