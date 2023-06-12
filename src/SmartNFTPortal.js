@@ -34,27 +34,14 @@ const SmartNFTPortal = (props) => {
             }
         }
     }
-    const doKeyUp = (e) => { 
-        if (e.key==="Escape") { 
-            if (onBlur) { 
-                onBlur(e);
-            }
-        }
-    }
     useEffect(() => {
         window.addEventListener("message", onMessage);
         window.addEventListener('blur', doFocus);
-        window.addEventListener('focus', doBlur);
-        
-        var  doc = iFrameRef.current.contentWindow.document;
-        doc.designMode = "on";
-        doc.addEventListener("keyup", doKeyUp, true)
-    
+        window.addEventListener('focus', doBlur);   
         return () => { 
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
             window.removeEventListener('focus',doBlur);
-            doc.removeEventListener("keyup", doKeyUp);
         }
     }, []);
     if (loading) { 
@@ -119,6 +106,11 @@ const SmartNFTPortal = (props) => {
                 return onGetUTXOs(e);
             case 'getMetadata':
                 return onGetMetadata(e);
+            case 'escape':
+                if (onBlur) { 
+                    onBlur(e);
+                }
+                return;
             default:
                 return;
         }
@@ -459,6 +451,11 @@ const getPortalAPIScripts = (smartImports, metadata) => {
     ret+=`
         <script>
             ${filesAPIJS}
+            window.addEventListener('keyup',(e) => { 
+                if (e.key==="Escape") { 
+                    parent.postMessage({request:'escape'});
+                }
+            });
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
             }
