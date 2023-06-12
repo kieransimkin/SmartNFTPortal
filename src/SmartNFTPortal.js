@@ -16,10 +16,7 @@ const SmartNFTPortal = (props) => {
         onFocus, 
         onBlur, 
         onMouseOut, 
-        onMouseOver, 
-        onClick, 
-        onMouseDown, 
-        onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel} = props;
+        onMouseOver} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -365,7 +362,7 @@ const SmartNFTPortal = (props) => {
             librariesHTML+='<script src="'+smartImports.libraries[c]+'"></script>'
         }
     }
-    librariesHTML+=getPortalAPIScripts(smartImports, metadata, activeHtmlStyle, inactiveHtmlStyle);
+    librariesHTML+=getPortalAPIScripts(smartImports, metadata, props);
     if (metadata && metadata.files && metadata.files[0]) { 
         let newSrc = metadata.files[0].src; // Todo - this line and the line above assume that the text/html program code will be the first element in the files array
         if (Array.isArray(newSrc)) { 
@@ -382,8 +379,8 @@ const SmartNFTPortal = (props) => {
 }
 
 // This is the API that's provided to the child iframe:
-const getPortalAPIScripts = (smartImports, metadata, activeHtmlStyle, inactiveHtmlStyle) => { 
-
+const getPortalAPIScripts = (smartImports, metadata, props) => { 
+    const  {onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, activeHtmlStyle, inactiveHtmlStyle} = props;
     let ret="<script>\n";
     ret+="if (!window.cardano) window.cardano={};\n";
     ret+="if (!window.cardano.nft) window.cardano.nft={};\n";
