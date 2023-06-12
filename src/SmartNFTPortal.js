@@ -453,7 +453,7 @@ const getPortalAPIScripts = (smartImports, metadata) => {
             ${filesAPIJS}
             window.addEventListener('keyup',(e) => { 
                 if (e.key==="Escape") { 
-                    parent.postMessage({request:'escape'});
+                    parent.postMessage({request:'escape'},'*');
                 }
             });
             window.cardano.nft.getOwner = async () => { 
