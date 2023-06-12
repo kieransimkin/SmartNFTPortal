@@ -20,38 +20,30 @@ const SmartNFTPortal = (props) => {
     const iFrameRef = useRef();
     let src='';
     let librariesHTML ='';
-    
+    const doFocus = () => { 
+        if (document.activeElement === iFrameRef.current) {
+            if (onFocus) {           
+                onFocus();
+            }
+        }
+    }
+    const doBlur = () => {
+        if (document.activeElement !== iFrameRef.current) {
+            if (onBlur) { 
+                onBlur();
+            }
+        }
+    }
     useEffect(() => {
         window.addEventListener("message", onMessage);
+        window.addEventListener('blur', doFocus);
+        window.addEventListener('focus', doBlur);
         return () => { 
-            window.removeEventListener("message", onMessage)
+            window.removeEventListener("message",onMessage)
+            window.removeEventListener('blur',doFocus);
+            window.removeEventListener('focus',doBlur);
         }
-      }, []);
-     
-      
-    useEffect(()=> { 
-        window.addEventListener('blur', () => {
-            if (document.activeElement === iFrameRef.current) {
-                console.log('clicked on iframe')
-                if (onFocus) { 
-                       
-                    onFocus();
-                }
-            }
-            
-        });
-        window.addEventListener('focus', () => { 
-            console.log(document.activeElement);
-            console.log(iFrameRef.current);
-            if (document.activeElement !== iFrameRef.current) {
-                console.log('clicked out of iframe');
-                if (onBlur) { 
-                    onBlur();
-                }
-                
-            }
-        });
-    },[]);
+    }, []);
     if (loading) { 
         return loadingContent;
     }
