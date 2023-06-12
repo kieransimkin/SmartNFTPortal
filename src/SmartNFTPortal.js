@@ -34,14 +34,27 @@ const SmartNFTPortal = (props) => {
             }
         }
     }
+    const doKeyUp = (e) => { 
+        if (e.key==="Escape") { 
+            if (onBlur) { 
+                onBlur(e);
+            }
+        }
+    }
     useEffect(() => {
         window.addEventListener("message", onMessage);
         window.addEventListener('blur', doFocus);
         window.addEventListener('focus', doBlur);
+        
+        var  doc = iFrameRef.current.contentWindow.document;
+        doc.designMode = "on";
+        doc.addEventListener("keyup", doKeyUp, true)
+    
         return () => { 
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
             window.removeEventListener('focus',doBlur);
+            doc.removeEventListener("keyup", doKeyUp);
         }
     }, []);
     if (loading) { 
