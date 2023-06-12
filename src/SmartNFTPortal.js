@@ -30,19 +30,24 @@ const SmartNFTPortal = (props) => {
      
       
     useEffect(()=> { 
-        const listener = window.addEventListener('blur', () => {
-            console.log(document.activeElement);
-            console.log(iFrameRef.current);
-            if (document.activeElement === document.querySelector('iframe')) {
-              console.log('clicked on iframe')
-            }
+        if (onFocus) { 
+            window.addEventListener('blur', () => {
+                if (document.activeElement === iFrameRef.current) {
+                    console.log('clicked on iframe')
+                    onFocus();
+                }
             
-          });
-        const l = window.addEventListener('focus', () => { 
-            if (document.activeElement !== document.querySelector('iframe')) {
-
-            }
-         });
+            });
+        }
+        if (onBlur) { 
+            window.addEventListener('focus', () => { 
+                console.log(document.activeElement);
+                console.log(iFrameRef.current);
+                if (document.activeElement !== iFrameRef.current) {
+                    console.log('clicked out of iframe');
+                }
+            });
+        }
     },[]);
     if (loading) { 
         return loadingContent;
