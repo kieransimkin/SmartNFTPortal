@@ -7,7 +7,6 @@ const SmartNFTPortal = (props) => {
     const {smartImports, metadata, style, loading, random, activeHtmlStyle, inactiveHtmlStyle, className, onFocus, onBlur} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
-    const [focused, setFocused] = useState(false);
     if (!loadingContent) { 
         loadingContent=(
             <>
