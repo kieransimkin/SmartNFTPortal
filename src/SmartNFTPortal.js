@@ -4,7 +4,22 @@ import { useEffect, useRef } from 'react';
 import * as React from "react";
 
 const SmartNFTPortal = (props) => { 
-    const {smartImports, metadata, style, loading, random, activeHtmlStyle, inactiveHtmlStyle, className, onFocus, onBlur} = props;
+    const {
+        smartImports, 
+        metadata, 
+        style, 
+        loading, 
+        random, 
+        activeHtmlStyle, 
+        inactiveHtmlStyle, 
+        className, 
+        onFocus, 
+        onBlur, 
+        onMouseOut, 
+        onMouseOver, 
+        onClick, 
+        onMouseDown, 
+        onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel} = props;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -38,14 +53,32 @@ const SmartNFTPortal = (props) => {
             }
         }
     }
+    const doMouseover = () => { 
+        if (onMouseOver) { 
+            onMouseOver();
+        }
+    }
+    const doMouseout = () => { 
+        if (onMouseOut) { 
+            onMouseOut();
+        }
+    }
     useEffect(() => {
         window.addEventListener("message", onMessage);
         window.addEventListener('blur', doFocus);
-        window.addEventListener('focus', doBlur);   
+        window.addEventListener('focus', doBlur);
+        if (iFrameRef.current) { 
+            iFrameRef.current.addEventListener('mouseover', doMouseover);
+            iFrameRef.current.addEventListener('mouseout', doMouseout);
+        }
         return () => { 
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
             window.removeEventListener('focus',doBlur);
+            if (iFrameRef.current) { 
+                iFrameRef.current.removeEventListener('mouseover', doMouseover);
+                iFrameRef.current.removeEventListener('mouseout', doMouseout);
+            }
         }
     }, []);
     if (loading) { 
@@ -117,6 +150,26 @@ const SmartNFTPortal = (props) => {
                     onBlur(e);
                 }
                 return;
+            case 'onClick':
+                if (onClick) return onClick(e.data.event);
+            case 'onMouseDown':
+                if (onMouseDown) return onMouseDown(e.data.event);
+            case 'onMouseUp':
+                if (onMouseUp) return onMouseUp(e.data.event);
+            case 'onMouseMove':
+                if (onMouseMove) return onMouseMove(e.data.event);
+            case 'onContextMenu':
+                if (onContextMenu) return onContextMenu(e.data.event);
+            case 'onDblClick':
+                if (onDblClick) return onDblClick(e.data.event);
+            case 'onTouchStart':
+                if (onTouchStart) return onTouchStart(e.data.event);
+            case 'onTouchEnd':
+                if (onTouchEnd) return onTouchEnd(e.data.event);
+            case 'onTouchMove':
+                if (onTouchMove) return onTouchMove(e.data.event);
+            case 'onTouchCancel':
+                if (onTouchCancel) return onTouchCancel(e.data.event);
             default:
                 return;
         }
@@ -470,6 +523,46 @@ const getPortalAPIScripts = (smartImports, metadata, activeHtmlStyle, inactiveHt
                 }
             }
             window.addEventListener('message',focusBlurHandler);
+            ${onClick ? `window.addEventListener('click',(e) => { 
+                parent.postMessage({request:'click',event:e},'*');
+            });
+            `:''}
+            ${onMouseDown ? `window.addEventListener('mousedown',(e) => { 
+                parent.postMessage({request:'mousedown',event:e},'*');
+            });
+            `:''}
+            ${onMouseUp ? `window.addEventListener('mouseup',(e) => { 
+                parent.postMessage({request:'mousedown',event:e},'*');
+            });
+            `:''}
+            ${onMouseMove ? `window.addEventListener('mousemove',(e) => { 
+                parent.postMessage({request:'mousemove',event:e},'*');
+            });
+            `:''}
+            ${onContextMenu ? `window.addEventListener('contextmenu',(e) => { 
+                parent.postMessage({request:'contextmenu',event:e},'*');
+            });
+            `:''}
+            ${onDblClick ? `window.addEventListener('dblclick',(e) => { 
+                parent.postMessage({request:'dblclick',event:e},'*');
+            });
+            `:''}
+            ${onTouchStart ? `window.addEventListener('touchstart',(e) => { 
+                parent.postMessage({request:'touchstart',event:e},'*');
+            });
+            `:''}
+            ${onTouchEnd ? `window.addEventListener('touchend',(e) => { 
+                parent.postMessage({request:'touchend',event:e},'*');
+            });
+            `:''}
+            ${onTouchMove ? `window.addEventListener('touchmove',(e) => { 
+                parent.postMessage({request:'touchmove',event:e},'*');
+            });
+            `:''}
+            ${onTouchCancel ? `window.addEventListener('touchcancel',(e) => { 
+                parent.postMessage({request:'touchmove',event:e},'*');
+            });
+            `:''}
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
             }
@@ -569,6 +662,18 @@ SmartNFTPortal.propTypes = {
     random: PropTypes.number,
     inactiveHtmlStyle: PropTypes.string,
     activeHtmlStyle: PropTypes.string,
+    onMouseOver: PropTypes.func,
+    onMouseOut: PropTypes.func,
+    onClick:PropTypes.func,
+    onMouseDown:PropTypes.func,
+    onMouseUp:PropTypes.func,
+    onMouseMove:PropTypes.func,
+    onContextMenu:PropTypes.func,
+    onDblClick:PropTypes.func,
+    onTouchStart:PropTypes.func,
+    onTouchEnd:PropTypes.func,
+    onTouchMove:PropTypes.func,
+    onTouchCancel:PropTypes.func,
     loading: PropTypes.bool.isRequired,
     smartImports: PropTypes.object.isRequired,
     metadata: PropTypes.object.isRequired,
