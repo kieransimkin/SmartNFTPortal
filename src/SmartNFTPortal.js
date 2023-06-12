@@ -384,7 +384,7 @@ const SmartNFTPortal = (props) => {
 
 // This is the API that's provided to the child iframe:
 const getPortalAPIScripts = (smartImports, metadata, props) => { 
-    const  {onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, activeHtmlStyle, inactiveHtmlStyle} = props;
+    const  {onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, activeHtmlStyle, inactiveHtmlStyle,focus} = props;
     let ret="<script>\n";
     ret+="if (!window.cardano) window.cardano={};\n";
     ret+="if (!window.cardano.nft) window.cardano.nft={};\n";
@@ -407,11 +407,15 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
         ret+='window.cardano.nft._data.mintTx='+JSON.stringify(smartImports.mintTx)+";\n";
     }
     ret+="if(document.readyState!=='loading') {\n";
-    ret+="  document.getElementById('focusTarget').focus();\n";
+    if (focus) { 
+        ret+="  document.getElementById('focusTarget').focus();\n";
+    }
     ret+="  parent.postMessage({request:'ready'},'*');\n";
     ret+="} else {\n";
     ret+="  document.addEventListener('DOMContentLoaded', () => {\n";
-    ret+="      document.getElementById('focusTarget').focus();\n";
+    if (focus) { 
+        ret+="      document.getElementById('focusTarget').focus();\n";
+    }
     ret+="      parent.postMessage({request:'ready'},'*');\n";
     ret+="  });\n";
     ret+="}\n";
@@ -692,6 +696,7 @@ SmartNFTPortal.propTypes = {
     apiRoot: PropTypes.string,
     className: PropTypes.string,
     onFocus: PropTypes.func,
-    onBlur: PropTypes.func
+    onBlur: PropTypes.func,
+    focus:PropTypes.bool
   };
 export default SmartNFTPortal;
