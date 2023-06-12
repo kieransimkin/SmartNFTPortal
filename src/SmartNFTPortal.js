@@ -16,7 +16,7 @@ const SmartNFTPortal = (props) => {
         onBlur, 
         onMouseOut, 
         onMouseOver,
-        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel
+        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady
     } = props;
     
     let loadingContent = props.loadingContent;
@@ -149,6 +149,8 @@ const SmartNFTPortal = (props) => {
                     onBlur(e);
                 }
                 return;
+            case 'ready':
+                if (onReady) return onReady();
             case 'click':
                 if (onClick) return onClick(e.data.event);
             case 'mouseDown':
@@ -371,7 +373,7 @@ const SmartNFTPortal = (props) => {
             newSrc = newSrc.join('');
         }
         let blob = dataURItoString(newSrc); 
-        blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}>'+blob+'</body></html>';
+        blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
         src='data:text/html,'+encodeURIComponent(blob)
     }
     // Here the actual iframe that does all the work:
@@ -404,6 +406,15 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     if (smartImports?.mintTx) { 
         ret+='window.cardano.nft._data.mintTx='+JSON.stringify(smartImports.mintTx)+";\n";
     }
+    ret+="if(document.readyState!=='loading') {\n";
+    ret+="  document.getElementById('focusTarget').focus();\n";
+    ret+="  parent.postMessage({request:'ready'},'*');\n";
+    ret+="} else {\n";
+    ret+="  document.addEventListener('DOMContentLoaded', () => {\n";
+    ret+="      document.getElementById('focusTarget').focus();\n";
+    ret+="      parent.postMessage({request:'ready'},'*');\n";
+    ret+="  });\n";
+    ret+="}\n";
     ret+='</script>';
 
     // I wanna read this from a separate .js file, but I can't work out how to have it done in the preprocessor so that there's no need for an async call in the client side
@@ -661,6 +672,7 @@ SmartNFTPortal.propTypes = {
     random: PropTypes.number,
     inactiveHtmlStyle: PropTypes.string,
     activeHtmlStyle: PropTypes.string,
+    onReady:PropTypes.func,
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
     onClick:PropTypes.func,
