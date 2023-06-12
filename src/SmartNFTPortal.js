@@ -464,9 +464,9 @@ const getPortalAPIScripts = (smartImports, metadata) => {
             });
             const focusBlurHandler = (e) => { 
                 if (e.data.request=='focus' && !e.data.error) { 
-                    document.querySelector('html').style=${JSON.stringify(activeHtmlStyle)};
+                    document.querySelector('html').style=${JSON.stringify(activeHtmlStyle||'')};
                 } else if (e.data.request=='blur' && !e.data.error) { 
-                    document.querySelector('html').style=${JSON.stringify(inactiveHtmlStyle)};
+                    document.querySelector('html').style=${JSON.stringify(inactiveHtmlStyle||'')};
                 }
             }
             window.addEventListener('message',focusBlurHandler);
