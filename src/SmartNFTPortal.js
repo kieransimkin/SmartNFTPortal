@@ -550,6 +550,6 @@ SmartNFTPortal.propTypes = {
     apiRoot: PropTypes.string,
     className: PropTypes.string,
     onFocus: PropTypes.func,
-    onBlur: PropTypes.fund
+    onBlur: PropTypes.func
   };
 export default SmartNFTPortal;
