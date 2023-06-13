@@ -241,7 +241,7 @@ const SmartNFTPortal = (props) => {
                             request: 'getFile',
                             id: e.data.id,
                             unit: e.data.unit, 
-                            mediaType: res.mediaType,
+                            mediaType: res.headers.get("Content-Type"),
                             buffer
                         },'*',[buffer]);
                     });
