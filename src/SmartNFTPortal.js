@@ -2,6 +2,8 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import * as React from "react";
+import { version } from  '../package.json'
+
 
 const SmartNFTPortal = (props) => { 
     const {
@@ -391,7 +393,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     ret+="if (!window.cardano) window.cardano={};\n";
     ret+="if (!window.cardano.nft) window.cardano.nft={};\n";
     ret+="if (!window.cardano.nft._data) window.cardano.nft._data={};\n";
-
+    ret+="window.cardano.nft._data.portalVersion="+JSON.stringify(version)+";\n";
     ret+="window.cardano.nft._data.ownerAddr="+JSON.stringify(smartImports?.ownerAddr)+";\n";
     ret+="window.cardano.nft._data.fetchedAt="+JSON.stringify(smartImports?.fetchedAt)+";\n";
     ret+="window.cardano.nft._data.tokenUnit="+JSON.stringify(smartImports.tokenUnit)+";\n";
@@ -585,6 +587,9 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             `:''}
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
+            }
+            window.cardano.nft.getPortalVersion = async () => { 
+                return window.cardano.nft._data.portalVersion;
             }
             window.cardano.nft.getMintTx = async () => { 
                 if (window.cardano.nft._data.mintTx) return window.cardano.nft._data.mintTx;
