@@ -492,7 +492,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 const messageHandler = (e) => { 
                     if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
                         window.removeEventListener('message',messageHandler);
-                        resolve(e.data.buffer);
+                        resolve(new Blob([e.data.buffer],{type: e.data.mediaType});
                     } else if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         reject(e.data.error);
@@ -503,7 +503,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             });
         }
         window.cardano.nft.getFileUrl = async (id=null, unit='own') => { 
-            return URL.createObjectURL(new Blob([await window.cardano.nft.getFile(id, unit)]));
+            return URL.createObjectURL(await window.cardano.nft.getFile(id, unit));
         }
         window.cardano.nft.getMetadata = async (unit='own') => { 
             if (unit=='own') return window.cardano.nft._data.metadata;
