@@ -502,7 +502,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
             });
         }
-        window.cardano.getFileUrl = async (id=null, unit='own') => { 
+        window.cardano.nft.getFileUrl = async (id=null, unit='own') => { 
             return URL.createObjectURL(new Blob([await window.cardano.nft.getFile(id, unit)]));
         }
         window.cardano.nft.getMetadata = async (unit='own') => { 
