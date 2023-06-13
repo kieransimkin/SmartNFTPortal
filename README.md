@@ -139,13 +139,13 @@ Just a quick way to trigger a refresh of the component
 
 > default: ''
 
-A snippet of CSS to add to the `<body>` tag within the sandbox when is not focused
+A snippet of CSS to add to the `<html>` tag within the sandbox when is not focused
 
 #### activeHtmlStyle: `string`
 
 > default: ''
 
-A snippet of CSS to add to the `<body>` tag within the sandbox when is focused
+A snippet of CSS to add to the `<html>` tag within the sandbox when is focused
 
 #### onReady: `function`
 

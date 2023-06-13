@@ -186,7 +186,7 @@ const SmartNFTPortal = (props) => {
                         iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenThumb',
                             unit: e.data.unit, 
-                            mediaType: img.mediaType,
+                            mediaType: img.headers.get("Content-Type"),
                             buffer
                         },'*', [buffer]);
                     });
@@ -213,7 +213,7 @@ const SmartNFTPortal = (props) => {
                         iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenImage',
                             unit: e.data.unit, 
-                            mediaType: img.mediaType,
+                            mediaType: img.headers.get("Content-Type"),
                             buffer
                         },'*', [buffer]);
                     });
@@ -456,7 +456,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 const messageHandler = (e) => { 
                     if (e.data.request=='getTokenThumb' && e.data.unit == unit && !e.data.error) {
                         window.removeEventListener('message',messageHandler);
-                        resolve(e.data.buffer);
+                        resolve(new Blob([e.data.buffer], {type: e.data.mediaType}));
                     } else if (e.data.request=='getTokenThumb' && e.data.unit == unit && e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         reject(e.data.error);
@@ -467,14 +467,14 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             });
         }
         window.cardano.nft.getTokenThumbUrl = async (unit) => { 
-            return URL.createObjectURL(new Blob([await window.cardano.nft.getTokenThumb(unit)]));
+            return URL.createObjectURL(await window.cardano.nft.getTokenThumb(unit));
         }
         window.cardano.nft.getTokenImage = async (unit) => { 
             return new Promise(async (resolve, reject) => { 
                 const messageHandler = (e) => { 
                     if (e.data.request=='getTokenImage' && e.data.unit == unit && !e.data.error) { 
                         window.removeEventListener('message',messageHandler);
-                        resolve(e.data.buffer);
+                        resolve(new Blob([e.data.buffer], {type: e.data.mediaType}));
                     } else if (e.data.request=='getTokenImage' && e.data.unit == unit && e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         reject(e.data.error);
@@ -485,14 +485,14 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             });
         }
         window.cardano.nft.getTokenImageUrl = async (unit) => { 
-            return URL.createObjectURL(new Blob([await window.cardano.nft.getTokenImage(unit)]));
+            return URL.createObjectURL(await window.cardano.nft.getTokenImage(unit));
         }
         window.cardano.nft.getFile = async (id=null, unit='own') => { 
             return new Promise(async (resolve, reject) => { 
                 const messageHandler = (e) => { 
                     if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
                         window.removeEventListener('message',messageHandler);
-                        resolve(new Blob([e.data.buffer],{type: e.data.mediaType}));
+                        resolve(new Blob([e.data.buffer], {type: e.data.mediaType}));
                     } else if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         reject(e.data.error);
