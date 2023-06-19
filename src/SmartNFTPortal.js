@@ -561,7 +561,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     if (e.data.request=='getFileObject' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         for (const prop of Object.keys(e.data.result.props)) { 
-                            if (prop=='id' || prop=='unit' || prop=='mediatype' || prop=='src') continue;
+                            if (prop==='src') continue;
                             e.data.result[prop]=e.data.result.props[prop];
                         }
                         resolve(e.data.result);
