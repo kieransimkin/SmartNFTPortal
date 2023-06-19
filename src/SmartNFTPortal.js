@@ -498,7 +498,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 if (window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
                     for (const file of window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
                         if (file?.id && file?.id==id) { 
-                            const res = await fetch(window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit].src);
+                            const res = await fetch(file?.src);
                             resolve(await res.blob());
                             break;
                         }
