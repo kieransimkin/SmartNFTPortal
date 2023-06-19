@@ -527,7 +527,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 resolve(URL.createObjectURL(await window.cardano.nft.getFile(id, unit)))
-            }
+            });
         }
         window.cardano.nft.getMetadata = async (unit='own') => { 
             if (unit=='own') return window.cardano.nft._data.metadata;
