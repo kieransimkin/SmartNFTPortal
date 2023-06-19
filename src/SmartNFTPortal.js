@@ -136,6 +136,8 @@ const SmartNFTPortal = (props) => {
                 return onGetTokenImage(e);
             case 'getFile':
                 return onGetFile(e);
+            case 'getFileObject':
+                return onGetFileObject(e);
             case 'getTransactions':
                 return onGetTransactions(e);
             case 'getTokens':
@@ -252,6 +254,30 @@ const SmartNFTPortal = (props) => {
                 if (!iFrameRef.current) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getFile',
+                    id: e.data.id,
+                    unit: e.data.unit, 
+                    error: {
+                        message: 'HTTP Error '+res.status+' from backend API', 
+                        code: res.status
+                    }
+                },'*');
+            }
+        })        
+    }
+    const onGetFileObject = (e) => { 
+        postData('/getFileObject',{unit: e.data.unit, id: e.data.id, metadata: e.data.metadata}).then((res) => {
+            if (res.status == 200) {
+                res.json().then(result => {      
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
+                        request: 'getFileObject',
+                        result
+                    },'*')
+                });
+            } else { 
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
+                    request: 'getFileObject',
                     id: e.data.id,
                     unit: e.data.unit, 
                     error: {
@@ -449,6 +475,9 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
         window.cardano.nft.getFileUrl = async (id=null, unit=null) => { 
             console.error('Attempt to use getFileUrl without importing files API');
         }
+        window.cardano.nft.getFileObject = async (id=null, unit=null) => { 
+            console.error('Attempt to use getFileObject without importing files API');
+        }
         window.cardano.nft.getMetadata = async (unit='own') => { 
             if (unit=='own') return window.cardano.nft._data.metadata;
             console.error('Attempt to use getMetadata on an external NFT without importing files API');
@@ -515,6 +544,28 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 window.addEventListener('message',messageHandler);
                 parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
             
+            });
+        }
+        window.cardano.nft.getFileObject = async (id=null, unit='own') => { 
+            return new Promise(async (resolve, reject) => { 
+                if (window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
+                    for (const file of window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
+                        if (file?.id && file?.id==id) { 
+                            return resolve(file);
+                        }
+                    }
+                }
+                const messageHandler = (e) => { 
+                    if (e.data.request=='getFileObject' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
+                        window.removeEventListener('message',messageHandler);
+                        resolve(e.data);
+                    } else if (e.data.request=='getFileObject' && e.data.id == id && e.data.unit == unit && e.data.error) { 
+                        window.removeEventListener('message',messageHandler);
+                        reject(e.data.error);
+                    }
+                }
+                window.addEventListener('message',messageHandler);
+                parent.postMessage({request:'getFileObject',id,unit, metadata:window.cardano.nft._data.metadata},'*');
             });
         }
         window.cardano.nft.getFileUrl = async (id=null, unit='own') => { 
