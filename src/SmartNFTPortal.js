@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import * as React from "react";
-import { version } from  '../package.json'
+import { version } from  './package.json'
 
 
 const SmartNFTPortal = (props) => { 
@@ -394,6 +394,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     ret+="if (!window.cardano.nft) window.cardano.nft={};\n";
     ret+="if (!window.cardano.nft._data) window.cardano.nft._data={};\n";
     ret+="window.cardano.nft._data.portalVersion="+JSON.stringify(version)+";\n";
+    ret+="window.cardano.nft._data.libcip54Version="+JSON.stringify(smartImports?.libcip54Version)+";\n";
     ret+="window.cardano.nft._data.ownerAddr="+JSON.stringify(smartImports?.ownerAddr)+";\n";
     ret+="window.cardano.nft._data.fetchedAt="+JSON.stringify(smartImports?.fetchedAt)+";\n";
     ret+="window.cardano.nft._data.tokenUnit="+JSON.stringify(smartImports.tokenUnit)+";\n";
@@ -409,6 +410,9 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     }
     if (smartImports?.mintTx) { 
         ret+='window.cardano.nft._data.mintTx='+JSON.stringify(smartImports.mintTx)+";\n";
+    }
+    if (smartImports?.files) { 
+        ret+='window.cardano.nft._data.files='+JSON.stringify(smartImports.files)+";\n";
     }
     ret+="if(document.readyState!=='loading') {\n";
     if (focus) { 
@@ -491,17 +495,28 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
         }
         window.cardano.nft.getFile = async (id=null, unit='own') => { 
             return new Promise(async (resolve, reject) => { 
-                const messageHandler = (e) => { 
-                    if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
-                        window.removeEventListener('message',messageHandler);
-                        resolve(new Blob([e.data.buffer], {type: e.data.mediaType}));
-                    } else if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && e.data.error) { 
-                        window.removeEventListener('message',messageHandler);
-                        reject(e.data.error);
+                if (window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
+                    for (const file of window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
+                        if (file?.id && file?.id==id) { 
+                            const res = await fetch(window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit].src);
+                            resolve(await res.blob());
+                            break;
+                        }
+                        
                     }
-                }
-                window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
+                } else { 
+                    const messageHandler = (e) => { 
+                        if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
+                            window.removeEventListener('message',messageHandler);
+                            resolve(new Blob([e.data.buffer], {type: e.data.mediaType}));
+                        } else if (e.data.request=='getFile' && e.data.id == id && e.data.unit == unit && e.data.error) { 
+                            window.removeEventListener('message',messageHandler);
+                            reject(e.data.error);
+                        }
+                    }
+                    window.addEventListener('message',messageHandler);
+                    parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
+                }   
             });
         }
         window.cardano.nft.getFileUrl = async (id=null, unit='own') => { 
@@ -590,6 +605,9 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             }
             window.cardano.nft.getPortalVersion = async () => { 
                 return window.cardano.nft._data.portalVersion;
+            }
+            window.cardano.nft.getLibcip54Version = async() => { 
+                return window.cardano.nft._data.libcip54Version;
             }
             window.cardano.nft.getMintTx = async () => { 
                 if (window.cardano.nft._data.mintTx) return window.cardano.nft._data.mintTx;
