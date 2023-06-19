@@ -271,6 +271,8 @@ const SmartNFTPortal = (props) => {
                     if (!iFrameRef.current) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getFileObject',
+                        id: e.data.id,
+                        unit: e.data.unit,
                         result
                     },'*')
                 });
