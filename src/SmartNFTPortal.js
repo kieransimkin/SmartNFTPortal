@@ -85,10 +85,22 @@ const SmartNFTPortal = (props) => {
     if (loading) { 
         return loadingContent;
     }
+    
+    const base64ToUnicode = (str) => { 
+    // Going backward: from byte-stream to percent-encoding, to original string.
+     return decodeURIComponent(
+       atob(str)
+         .split('')
+         .map(function (c) {
+           return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+         })
+         .join('')
+     )
+   }
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = atob(dataURI.split(',')[1]); // This does not support unicode, but I haven't been able to find a reliable routine to decode utf-8 base64
+            byteString = base64ToUnicode(dataURI.split(',')[1]); // This does not support unicode, but I haven't been able to find a reliable routine to decode utf-8 base64
         } else { 
             byteString = decodeURIComponent(dataURI.split(',')[1]);
         }
