@@ -95,6 +95,16 @@ const SmartNFTPortal = (props) => {
                 .join('')
         )
     }
+    function unicodeToBase64(str) {
+        // First we use encodeURIComponent to get percent-encoded UTF-8,
+        // then we convert the percent encodings into raw bytes which
+        // can be fed into btoa.
+        return btoa(
+          encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1)
+          })
+        )
+    }
     const dataURItoString = (dataURI) => {
         var byteString = '';
         if (dataURI.split(',')[0].includes('base64')) { 
@@ -411,7 +421,7 @@ const SmartNFTPortal = (props) => {
         }
         let blob = dataURItoString(newSrc); 
         blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
-        src='data:text/html,'+encodeURIComponent(blob)
+        src='data:text/html;base64,'+unicodeToBase64(blob)
     }
     // Here the actual iframe that does all the work:
     return (
