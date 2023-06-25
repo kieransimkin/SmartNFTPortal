@@ -568,6 +568,13 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 if (window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
                     for (const file of window.cardano.nft._data.files[unit=='own'?window.cardano.nft._data.tokenUnit:unit]) { 
                         if (file?.id && file?.id==id) { 
+                            if (file?.props) {
+                                for (const prop in file.props) { 
+                                    if (prop==='src') continue;
+                                    file[prop]=file.props[prop];
+                                }
+                                delete file.props;
+                            }
                             return resolve(file);
                         }
                     }
@@ -575,11 +582,13 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 const messageHandler = (e) => { 
                     if (e.data.request=='getFileObject' && e.data.id == id && e.data.unit == unit && !e.data.error) { 
                         window.removeEventListener('message',messageHandler);
-                        for (const prop of Object.keys(e.data.result.props)) { 
+                        const result = {...e.data.result};
+                        for (const prop in result?.props) { 
                             if (prop==='src') continue;
-                            e.data.result[prop]=e.data.result.props[prop];
+                            result[prop]=result.props[prop];
                         }
-                        resolve(e.data.result);
+                        delete result.props;
+                        resolve(result);
                     } else if (e.data.request=='getFileObject' && e.data.id == id && e.data.unit == unit && e.data.error) { 
                         window.removeEventListener('message',messageHandler);
                         reject(e.data.error);
