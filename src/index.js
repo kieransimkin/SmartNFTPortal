@@ -5,4 +5,3 @@ const getVersion = () => {
  return version;
 }
 export {SmartNFTPortal,version,getVersion};
-i
