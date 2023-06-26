@@ -4,6 +4,9 @@ import { useEffect, useRef } from 'react';
 import * as React from "react";
 import { version } from  '../package.json'
 
+export const getVersion = () => {
+ return version;
+}
 
 const SmartNFTPortal = (props) => { 
     const {
