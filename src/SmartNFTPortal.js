@@ -2,8 +2,8 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import * as React from "react";
-import { version } from  '../package.json'
-
+import { version as v } from  '../package.json'
+export const version = v;
 export const getVersion = () => {
  return version;
 }
