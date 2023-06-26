@@ -1,2 +1,8 @@
 import SmartNFTPortal from "./SmartNFTPortal";
-export {SmartNFTPortal};
+import { version as v } from  '../package.json'
+const version = v;
+const getVersion = () => {
+ return version;
+}
+export {SmartNFTPortal,version,getVersion};
+i
