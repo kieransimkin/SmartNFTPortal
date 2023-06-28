@@ -412,7 +412,8 @@ const SmartNFTPortal = (props) => {
 
     if (smartImports && smartImports.libraries && smartImports.libraries.length>0) { 
         for (var c=0; c<smartImports.libraries.length; c++) {
-            librariesHTML+='<script src="'+smartImports.libraries[c]+'"></script>'
+            librariesHTML+='<script src="'+smartImports.libraries[c]+'"><'; // the weird break here is to work around a bug with inline javascript in webpack that breaks when it sees the  close script tag
+            librariesHTML+='/script>\n';
         }
     }
     librariesHTML+=getPortalAPIScripts(smartImports, metadata, props);
@@ -472,7 +473,8 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     ret+="      parent.postMessage({request:'ready'},'*');\n";
     ret+="  });\n";
     ret+="}\n";
-    ret+='</script>';
+    ret+='<'; // Again we put a linebreak here to work around webpack's weird handling of inline scripts
+    ret+='/script>';
 
     // I wanna read this from a separate .js file, but I can't work out how to have it done in the preprocessor so that there's no need for an async call in the client side
     let filesAPIJS = `
@@ -785,8 +787,8 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     console.error('Attempt to access UTXOs that haven\\'t been imported');
                 }
             }
-        </script>
-    `;
+        <`;
+    ret+='/script>\n'; // Again we workaround the webpack bug
     return ret;
 }
 
