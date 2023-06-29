@@ -2,14 +2,13 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import * as React from "react";
-import { version } from  '../package.json'
+import { version as v } from  '../package.json'
 
 const SmartNFTPortal = (props) => { 
     const {
         smartImports, 
         metadata, 
         style, 
-        loading, 
         random, 
         inactiveHtmlStyle, 
         className, 
@@ -19,7 +18,8 @@ const SmartNFTPortal = (props) => {
         onMouseOver,
         onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
     } = props;
-    
+    let loading = props.loading;
+    if (!smartImports || !metadata || Object.keys(metadata).length === 0 || Object.keys(smartImports).length===0) loading=true;
     let loadingContent = props.loadingContent;
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
@@ -36,18 +36,18 @@ const SmartNFTPortal = (props) => {
     let src='';
     let librariesHTML ='';
     const doFocus = () => { 
-        if (document.activeElement === iFrameRef?.current) {
-            if (!iFrameRef?.current) return; // user browsed away
-            iFrameRef?.current.contentWindow.postMessage({request: 'focus'},'*');   
+        if (document.activeElement === iFrameRef.current) {
+            if (!iFrameRef.current) return; // user browsed away
+            iFrameRef.current.contentWindow.postMessage({request: 'focus'},'*');   
             if (onFocus) {
                 onFocus();
             }
         }
     }
     const doBlur = () => {
-        if (document.activeElement !== iFrameRef?.current) {
-            if (!iFrameRef?.current) return; // user browsed away
-            iFrameRef?.current.contentWindow.postMessage({request: 'blur'},'*');   
+        if (document.activeElement !== iFrameRef.current) {
+            if (!iFrameRef.current) return; // user browsed away
+            iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*');   
             if (onBlur) { 
                 onBlur();
             }
@@ -63,83 +63,27 @@ const SmartNFTPortal = (props) => {
             onMouseOut();
         }
     }
-
-    const onMessage = (e) => { 
-        switch (e.data.request) { 
-            case 'getTokenThumb':
-                return onGetTokenThumb(e);
-            case 'getTokenImage': 
-                return onGetTokenImage(e);
-            case 'getFile':
-                return onGetFile(e);
-            case 'getFileObject':
-                return onGetFileObject(e);
-            case 'getTransactions':
-                return onGetTransactions(e);
-            case 'getTokens':
-                return onGetTokens(e);
-            case 'getUTXOs': 
-                return onGetUTXOs(e);
-            case 'getMetadata':
-                return onGetMetadata(e);
-            case 'escape':
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({request: 'blur'},'*'); 
-                if (onBlur) { 
-                    onBlur(e);
-                }
-                return;
-            case 'ready':
-                if (onReady) return onReady();
-            case 'click':
-                if (onClick) return onClick(e.data.event);
-            case 'mouseDown':
-                if (onMouseDown) return onMouseDown(e.data.event);
-            case 'mouseUp':
-                if (onMouseUp) return onMouseUp(e.data.event);
-            case 'mouseMove':
-                if (onMouseMove) return onMouseMove(e.data.event);
-            case 'contextMenu':
-                if (onContextMenu) return onContextMenu(e.data.event);
-            case 'dblClick':
-                if (onDblClick) return onDblClick(e.data.event);
-            case 'touchStart':
-                if (onTouchStart) return onTouchStart(e.data.event);
-            case 'touchEnd':
-                if (onTouchEnd) return onTouchEnd(e.data.event);
-            case 'touchMove':
-                if (onTouchMove) return onTouchMove(e.data.event);
-            case 'touchCancel':
-                if (onTouchCancel) return onTouchCancel(e.data.event);
-            case 'scroll':
-                if (onScroll) return onScroll(e.data.event);
-            default:
-                return;
-        }
-    }
-    const iFrameRef = !loading ? useRef() : null;
     useEffect(() => {
         window.addEventListener("message", onMessage);
         window.addEventListener('blur', doFocus);
         window.addEventListener('focus', doBlur);
-        if (iFrameRef?.current) { 
-            iFrameRef?.current.addEventListener('mouseover', doMouseover);
-            iFrameRef?.current.addEventListener('mouseout', doMouseout);
+        if (iFrameRef.current) { 
+            iFrameRef.current.addEventListener('mouseover', doMouseover);
+            iFrameRef.current.addEventListener('mouseout', doMouseout);
         }
         return () => { 
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
             window.removeEventListener('focus',doBlur);
-            if (iFrameRef?.current) { 
-                iFrameRef?.current.removeEventListener('mouseover', doMouseover);
-                iFrameRef?.current.removeEventListener('mouseout', doMouseout);
+            if (iFrameRef.current) { 
+                iFrameRef.current.removeEventListener('mouseover', doMouseover);
+                iFrameRef.current.removeEventListener('mouseout', doMouseout);
             }
         }
     }, []);
     if (loading) { 
         return loadingContent;
     }
-    
     const base64ToUnicode = (str) => { 
         return decodeURIComponent(
             atob(str)
@@ -198,13 +142,66 @@ const SmartNFTPortal = (props) => {
         referrerPolicy: 'no-referrer',
         })
     }
+    const onMessage = (e) => { 
+        switch (e.data.request) { 
+            case 'getTokenThumb':
+                return onGetTokenThumb(e);
+            case 'getTokenImage': 
+                return onGetTokenImage(e);
+            case 'getFile':
+                return onGetFile(e);
+            case 'getFileObject':
+                return onGetFileObject(e);
+            case 'getTransactions':
+                return onGetTransactions(e);
+            case 'getTokens':
+                return onGetTokens(e);
+            case 'getUTXOs': 
+                return onGetUTXOs(e);
+            case 'getMetadata':
+                return onGetMetadata(e);
+            case 'escape':
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*'); 
+                if (onBlur) { 
+                    onBlur(e);
+                }
+                return;
+            case 'ready':
+                if (onReady) return onReady();
+            case 'click':
+                if (onClick) return onClick(e.data.event);
+            case 'mouseDown':
+                if (onMouseDown) return onMouseDown(e.data.event);
+            case 'mouseUp':
+                if (onMouseUp) return onMouseUp(e.data.event);
+            case 'mouseMove':
+                if (onMouseMove) return onMouseMove(e.data.event);
+            case 'contextMenu':
+                if (onContextMenu) return onContextMenu(e.data.event);
+            case 'dblClick':
+                if (onDblClick) return onDblClick(e.data.event);
+            case 'touchStart':
+                if (onTouchStart) return onTouchStart(e.data.event);
+            case 'touchEnd':
+                if (onTouchEnd) return onTouchEnd(e.data.event);
+            case 'touchMove':
+                if (onTouchMove) return onTouchMove(e.data.event);
+            case 'touchCancel':
+                if (onTouchCancel) return onTouchCancel(e.data.event);
+            case 'scroll':
+                if (onScroll) return onScroll(e.data.event);
+            default:
+                return;
+        }
+    }
     const onGetTokenThumb = (e) => { 
         getData('/tokenImageFromUnit?unit='+e.data.unit+'&size=256').then((img) => { 
             if (img.status == 200) {
                 img.blob().then((blob) => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef?.current) return; // user browsed away
-                        iFrameRef?.current.contentWindow.postMessage({
+                        if (!iFrameRef.current) return; // user browsed away
+                        iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenThumb',
                             unit: e.data.unit, 
                             mediaType: img.headers.get("Content-Type"),
@@ -213,8 +210,8 @@ const SmartNFTPortal = (props) => {
                     });
                 })                    
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokenThumb',
                     unit: e.data.unit, 
                     error: {
@@ -230,8 +227,8 @@ const SmartNFTPortal = (props) => {
             if (img.status == 200) {
                 img.blob().then((blob) => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef?.current) return; // user browsed away
-                        iFrameRef?.current.contentWindow.postMessage({
+                        if (!iFrameRef.current) return; // user browsed away
+                        iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenImage',
                             unit: e.data.unit, 
                             mediaType: img.headers.get("Content-Type"),
@@ -240,8 +237,8 @@ const SmartNFTPortal = (props) => {
                     });
                 })
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokenImage',
                     unit: e.data.unit, 
                     error: {
@@ -257,8 +254,8 @@ const SmartNFTPortal = (props) => {
             if (res.status == 200) {
                 res.blob().then(blob => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef?.current) return; // user browsed away
-                        iFrameRef?.current.contentWindow.postMessage({
+                        if (!iFrameRef.current) return; // user browsed away
+                        iFrameRef.current.contentWindow.postMessage({
                             request: 'getFile',
                             id: e.data.id,
                             unit: e.data.unit, 
@@ -268,8 +265,8 @@ const SmartNFTPortal = (props) => {
                     });
                 });
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getFile',
                     id: e.data.id,
                     unit: e.data.unit, 
@@ -285,8 +282,8 @@ const SmartNFTPortal = (props) => {
         postData('/getFileObject',{unit: e.data.unit, id: e.data.id, metadata: e.data.metadata}).then((res) => {
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef?.current) return; // user browsed away
-                    iFrameRef?.current.contentWindow.postMessage({
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
                         request: 'getFileObject',
                         id: e.data.id,
                         unit: e.data.unit,
@@ -294,8 +291,8 @@ const SmartNFTPortal = (props) => {
                     },'*')
                 });
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getFileObject',
                     id: e.data.id,
                     unit: e.data.unit, 
@@ -311,16 +308,16 @@ const SmartNFTPortal = (props) => {
         postData('/getMetadata',{unit: e.data.unit}).then((res) => {
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef?.current) return; // user browsed away
-                    iFrameRef?.current.contentWindow.postMessage({
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
                         request: 'getMetadata',
                         unit: e.data.unit, 
                         result
                     },'*')
                 });
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getMetadata',
                     unit: e.data.unit, 
                     error: {
@@ -335,8 +332,8 @@ const SmartNFTPortal = (props) => {
         postData('/getTransactions',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef?.current) return; // user browsed away
-                    iFrameRef?.current.contentWindow.postMessage({
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
                         request: 'getTransactions',
                         which: e.data.which, 
                         page: e.data.page, 
@@ -344,8 +341,8 @@ const SmartNFTPortal = (props) => {
                     },'*');   
                 });
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getTransactions',
                     which: e.data.which, 
                     page: e.data.page, 
@@ -361,8 +358,8 @@ const SmartNFTPortal = (props) => {
         postData('/getTokens',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef?.current) return; // user browsed away
-                    iFrameRef?.current.contentWindow.postMessage({
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
                         request: 'getTokens', 
                         which: e.data.which, 
                         page: e.data.page,
@@ -370,8 +367,8 @@ const SmartNFTPortal = (props) => {
                     },'*')
                 })
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokens', 
                     which: e.data.which, 
                     page: e.data.page, 
@@ -387,8 +384,8 @@ const SmartNFTPortal = (props) => {
         postData('/getUTXOs',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef?.current) return; // user browsed away
-                    iFrameRef?.current.contentWindow.postMessage({
+                    if (!iFrameRef.current) return; // user browsed away
+                    iFrameRef.current.contentWindow.postMessage({
                         request: 'getUTXOs',
                         which: e.data.which,
                         page: e.data.page, 
@@ -396,8 +393,8 @@ const SmartNFTPortal = (props) => {
                     }, '*')
                 });
             } else { 
-                if (!iFrameRef?.current) return; // user browsed away
-                iFrameRef?.current.contentWindow.postMessage({
+                if (!iFrameRef.current) return; // user browsed away
+                iFrameRef.current.contentWindow.postMessage({
                     request: 'getUTXOs',
                     which: e.data.which, 
                     page: e.data.page, 
