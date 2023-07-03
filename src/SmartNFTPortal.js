@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react';
 import * as React from "react";
-import { version as v } from  '../package.json'
+import { version } from  '../package.json'
 
 const SmartNFTPortal = (props) => { 
     const {
@@ -21,6 +21,7 @@ const SmartNFTPortal = (props) => {
     let loading = props.loading;
     if (!smartImports || !metadata || Object.keys(metadata).length === 0 || Object.keys(smartImports).length===0) loading=true;
     let loadingContent = props.loadingContent;
+    const iFrameRef = useRef();
     let ROOT = props.apiRoot;
     if (!loadingContent) { 
         loadingContent=(
@@ -63,27 +64,7 @@ const SmartNFTPortal = (props) => {
             onMouseOut();
         }
     }
-    useEffect(() => {
-        window.addEventListener("message", onMessage);
-        window.addEventListener('blur', doFocus);
-        window.addEventListener('focus', doBlur);
-        if (iFrameRef.current) { 
-            iFrameRef.current.addEventListener('mouseover', doMouseover);
-            iFrameRef.current.addEventListener('mouseout', doMouseout);
-        }
-        return () => { 
-            window.removeEventListener("message",onMessage)
-            window.removeEventListener('blur',doFocus);
-            window.removeEventListener('focus',doBlur);
-            if (iFrameRef.current) { 
-                iFrameRef.current.removeEventListener('mouseover', doMouseover);
-                iFrameRef.current.removeEventListener('mouseout', doMouseout);
-            }
-        }
-    }, []);
-    if (loading) { 
-        return loadingContent;
-    }
+
     const base64ToUnicode = (str) => { 
         return decodeURIComponent(
             atob(str)
@@ -422,6 +403,27 @@ const SmartNFTPortal = (props) => {
         let blob = dataURItoString(newSrc); 
         blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head><meta charset=utf-8>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
         src='data:text/html;charset=utf-8;base64,'+unicodeToBase64(blob)
+    }
+    useEffect(() => {
+        window.addEventListener("message", onMessage);
+        window.addEventListener('blur', doFocus);
+        window.addEventListener('focus', doBlur);
+        if (iFrameRef.current) { 
+            iFrameRef.current.addEventListener('mouseover', doMouseover);
+            iFrameRef.current.addEventListener('mouseout', doMouseout);
+        }
+        return () => { 
+            window.removeEventListener("message",onMessage)
+            window.removeEventListener('blur',doFocus);
+            window.removeEventListener('focus',doBlur);
+            if (iFrameRef.current) { 
+                iFrameRef.current.removeEventListener('mouseover', doMouseover);
+                iFrameRef.current.removeEventListener('mouseout', doMouseout);
+            }
+        }
+    }, []);
+    if (loading) { 
+        return loadingContent;
     }
     // Here the actual iframe that does all the work:
     return (
