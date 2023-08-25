@@ -151,31 +151,43 @@ const SmartNFTPortal = (props) => {
                 return;
             case 'ready':
                 if (onReady) return onReady();
+                return;
             case 'click':
                 if (onClick) return onClick(e.data.event);
+                return;
             case 'mouseDown':
                 if (onMouseDown) return onMouseDown(e.data.event);
+                return;
             case 'mouseUp':
                 if (onMouseUp) return onMouseUp(e.data.event);
+                return;
             case 'mouseMove':
                 if (onMouseMove) return onMouseMove(e.data.event);
+                return;
             case 'contextMenu':
                 if (onContextMenu) return onContextMenu(e.data.event);
+                return;
             case 'dblClick':
                 if (onDblClick) return onDblClick(e.data.event);
+                return;
             case 'touchStart':
                 if (onTouchStart) return onTouchStart(e.data.event);
+                return;
             case 'touchEnd':
                 if (onTouchEnd) return onTouchEnd(e.data.event);
+                return;
             case 'touchMove':
                 if (onTouchMove) return onTouchMove(e.data.event);
+                return;
             case 'touchCancel':
                 if (onTouchCancel) return onTouchCancel(e.data.event);
+                return;
             case 'scroll':
                 if (onScroll) return onScroll(e.data.event);
+                return;
             case 'link': 
-                if (onLink) return onLink(e.data.event)
-
+                if (onLink) return onLink(e)
+                return;
             default:
                 return;
         }
