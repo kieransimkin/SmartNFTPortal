@@ -190,7 +190,7 @@ const SmartNFTPortal = (props) => {
                     const iframe = document.createElement('iframe');         
                     Object.assign(iframe.style,style)
                     iframe.className=className;
-                    iframe.sandbox='allow-scripts allow-forms';
+                    iframe.sandbox='allow-scripts allow-forms allow-same-origin';
                     iframe.src=e.data.url;
                     iFrameRef.current.replaceWith(iframe);
                 }
