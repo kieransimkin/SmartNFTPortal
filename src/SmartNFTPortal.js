@@ -188,9 +188,11 @@ const SmartNFTPortal = (props) => {
             case 'link': 
                 if (onLink) { return onLink(e.data.url,e.data.event) } else {
                     const iframe = document.createElement('iframe');         
-                    iframe.style;
+                    iframe.style=style;
                     iframe.className=className;
                     iframe.src=e.data.url;
+                    console.log(className);
+                    console.log(iframe);
                     iFrameRef.current.replaceWith(iframe);
                 }
                 return;
