@@ -15,6 +15,7 @@ const SmartNFTPortal = (props) => {
         onFocus, 
         onBlur, 
         onMouseOut, 
+        onLink,
         onMouseOver,
         onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
     } = props;
@@ -172,6 +173,9 @@ const SmartNFTPortal = (props) => {
                 if (onTouchCancel) return onTouchCancel(e.data.event);
             case 'scroll':
                 if (onScroll) return onScroll(e.data.event);
+            case 'link': 
+                if (onLink) return onLink(e.data.event)
+
             default:
                 return;
         }
@@ -691,6 +695,9 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
             });
             `:''}
+            window.cardano.nft.linkTo = async(url) => { 
+                parent.postMessage({request:'link', url},'*');
+            }
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
             }
@@ -802,6 +809,7 @@ SmartNFTPortal.propTypes = {
     onMouseOut: PropTypes.func,
     onClick:PropTypes.func,
     onMouseDown:PropTypes.func,
+    onLink:PropTypes.func,
     onMouseUp:PropTypes.func,
     onMouseMove:PropTypes.func,
     onContextMenu:PropTypes.func,
