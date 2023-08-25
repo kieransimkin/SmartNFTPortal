@@ -186,7 +186,7 @@ const SmartNFTPortal = (props) => {
                 if (onScroll) return onScroll(e.data.event);
                 return;
             case 'link': 
-                if (onLink) return onLink(e)
+                if (onLink) return onLink(e.data.url)
                 return;
             default:
                 return;
