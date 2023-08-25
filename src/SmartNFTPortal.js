@@ -39,7 +39,7 @@ const SmartNFTPortal = (props) => {
     let librariesHTML ='';
     const doFocus = () => { 
         if (document.activeElement === iFrameRef.current) {
-            if (!iFrameRef.current) return; // user browsed away
+            if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
             iFrameRef.current.contentWindow.postMessage({request: 'focus'},'*');   
             if (onFocus) {
                 onFocus();
@@ -48,7 +48,7 @@ const SmartNFTPortal = (props) => {
     }
     const doBlur = () => {
         if (document.activeElement !== iFrameRef.current) {
-            if (!iFrameRef.current) return; // user browsed away
+            if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
             iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*');   
             if (onBlur) { 
                 onBlur();
@@ -143,7 +143,7 @@ const SmartNFTPortal = (props) => {
             case 'getMetadata':
                 return onGetMetadata(e);
             case 'escape':
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*'); 
                 if (onBlur) { 
                     onBlur(e);
@@ -187,10 +187,9 @@ const SmartNFTPortal = (props) => {
                 return;
             case 'link': 
                 if (onLink) { return onLink(e.data.url,e.data.event) } else {
-                    const iframe = document.createElement('iframe');
+                    const iframe = document.createElement('iframe');                    
                     iframe.src=e.data.url;
                     iFrameRef.current.replaceWith(iframe);
-                    //iFrameRef.current.src=e.data.url;
                 }
                 return;
             default:
@@ -202,7 +201,7 @@ const SmartNFTPortal = (props) => {
             if (img.status == 200) {
                 img.blob().then((blob) => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef.current) return; // user browsed away
+                        if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                         iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenThumb',
                             unit: e.data.unit, 
@@ -212,7 +211,7 @@ const SmartNFTPortal = (props) => {
                     });
                 })                    
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokenThumb',
                     unit: e.data.unit, 
@@ -229,7 +228,7 @@ const SmartNFTPortal = (props) => {
             if (img.status == 200) {
                 img.blob().then((blob) => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef.current) return; // user browsed away
+                        if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                         iFrameRef.current.contentWindow.postMessage({
                             request: 'getTokenImage',
                             unit: e.data.unit, 
@@ -239,7 +238,7 @@ const SmartNFTPortal = (props) => {
                     });
                 })
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokenImage',
                     unit: e.data.unit, 
@@ -256,7 +255,7 @@ const SmartNFTPortal = (props) => {
             if (res.status == 200) {
                 res.blob().then(blob => { 
                     blob.arrayBuffer().then((buffer) => { 
-                        if (!iFrameRef.current) return; // user browsed away
+                        if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                         iFrameRef.current.contentWindow.postMessage({
                             request: 'getFile',
                             id: e.data.id,
@@ -267,7 +266,7 @@ const SmartNFTPortal = (props) => {
                     });
                 });
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getFile',
                     id: e.data.id,
@@ -284,7 +283,7 @@ const SmartNFTPortal = (props) => {
         postData('/getFileObject',{unit: e.data.unit, id: e.data.id, metadata: e.data.metadata}).then((res) => {
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef.current) return; // user browsed away
+                    if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getFileObject',
                         id: e.data.id,
@@ -293,7 +292,7 @@ const SmartNFTPortal = (props) => {
                     },'*')
                 });
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getFileObject',
                     id: e.data.id,
@@ -310,7 +309,7 @@ const SmartNFTPortal = (props) => {
         postData('/getMetadata',{unit: e.data.unit}).then((res) => {
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef.current) return; // user browsed away
+                    if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getMetadata',
                         unit: e.data.unit, 
@@ -318,7 +317,7 @@ const SmartNFTPortal = (props) => {
                     },'*')
                 });
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getMetadata',
                     unit: e.data.unit, 
@@ -334,7 +333,7 @@ const SmartNFTPortal = (props) => {
         postData('/getTransactions',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef.current) return; // user browsed away
+                    if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getTransactions',
                         which: e.data.which, 
@@ -343,7 +342,7 @@ const SmartNFTPortal = (props) => {
                     },'*');   
                 });
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getTransactions',
                     which: e.data.which, 
@@ -360,7 +359,7 @@ const SmartNFTPortal = (props) => {
         postData('/getTokens',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef.current) return; // user browsed away
+                    if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getTokens', 
                         which: e.data.which, 
@@ -369,7 +368,7 @@ const SmartNFTPortal = (props) => {
                     },'*')
                 })
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getTokens', 
                     which: e.data.which, 
@@ -386,7 +385,7 @@ const SmartNFTPortal = (props) => {
         postData('/getUTXOs',{which: e.data.which, page: e.data.page}).then((res) => { 
             if (res.status == 200) {
                 res.json().then(result => {      
-                    if (!iFrameRef.current) return; // user browsed away
+                    if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                     iFrameRef.current.contentWindow.postMessage({
                         request: 'getUTXOs',
                         which: e.data.which,
@@ -395,7 +394,7 @@ const SmartNFTPortal = (props) => {
                     }, '*')
                 });
             } else { 
-                if (!iFrameRef.current) return; // user browsed away
+                if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'getUTXOs',
                     which: e.data.which, 
