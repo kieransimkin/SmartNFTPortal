@@ -186,7 +186,7 @@ const SmartNFTPortal = (props) => {
                 if (onScroll) return onScroll(e.data.event);
                 return;
             case 'link': 
-                if (onLink) return onLink(e.data.url)
+                if (onLink) return onLink(e.data.url,e.data.event)
                 return;
             default:
                 return;
@@ -707,8 +707,8 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
             });
             `:''}
-            window.cardano.nft.linkTo = async(url) => { 
-                parent.postMessage({request:'link', url},'*');
+            window.cardano.nft.linkTo = async(url,event) => { 
+                parent.postMessage({request:'link', url, event},'*');
             }
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
