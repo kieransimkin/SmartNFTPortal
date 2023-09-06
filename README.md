@@ -17,8 +17,6 @@ While this API provides a lot of additional functionality to NFTs inside the san
 This control, and the API in general is intended to be applicable to any UTXO blockchain - in particular if there's interest it may be ported to Bitcoin BRC20, and Ergo native tokens too. 
 Currently, libcip54 provides the backend functionality for Cardano, but it would be a simple matter to port this library to other blockchains (the queries will just need to be tweaked for different chain indexers)
 
-If you make anything cool, feel free to send me some - my Adahandle is `$kieran`
-
 ### Installing
 
 ```bash
