@@ -472,7 +472,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     ret+="window.cardano.nft._data.ownerAddr="+JSON.stringify(smartImports?.ownerAddr)+";\n";
     ret+="window.cardano.nft._data.fetchedAt="+JSON.stringify(smartImports?.fetchedAt)+";\n";
     ret+="window.cardano.nft._data.tokenUnit="+JSON.stringify(smartImports.tokenUnit)+";\n";
-    ret+="window.cardano.nft._data.metadata="+JSON.stringify(metadata)+";\n";
+    ret+="window.cardano.nft._data.metadata=JSON.parse(decodeURIComponent(`"+encodeURIComponent(JSON.stringify(metadata))+"`));\n";
     if (smartImports?.utxos) { 
         ret+='window.cardano.nft._data.utxos='+JSON.stringify(smartImports.utxos)+";\n";
     }
