@@ -12,6 +12,7 @@ const SmartNFTPortal = (props) => {
         random, 
         inactiveHtmlStyle, 
         className, 
+        onLoad,
         onFocus, 
         onBlur, 
         onMouseOut, 
@@ -435,6 +436,10 @@ const SmartNFTPortal = (props) => {
             iFrameRef.current.addEventListener('mouseover', doMouseover);
             iFrameRef.current.addEventListener('mouseout', doMouseout);
         }
+        
+        if (!loading && onLoad && typeof onLoad=='function') { 
+            onLoad();
+        }
         return () => { 
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
@@ -827,6 +832,7 @@ SmartNFTPortal.propTypes = {
     onMouseOver: PropTypes.func,
     onMouseOut: PropTypes.func,
     onClick:PropTypes.func,
+    onLoad:PropTypes.func,
     onMouseDown:PropTypes.func,
     onLink:PropTypes.func,
     onMouseUp:PropTypes.func,
