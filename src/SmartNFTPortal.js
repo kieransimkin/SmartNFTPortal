@@ -89,12 +89,13 @@ const SmartNFTPortal = (props) => {
     }
     const dataURItoString = (dataURI) => {
         var byteString = '';
-        if (dataURI.split(',')[0].includes('base64')) { 
-            byteString = base64ToUnicode(dataURI.split(',')[1]);
+        const [first, ...rest] = dataURI.split(',');
+        if (first.includes('base64')) { 
+            byteString = base64ToUnicode(rest.join(','));
         } else { 
-            byteString = decodeURIComponent(dataURI.split(',')[1]);
+            byteString = decodeURIComponent(rest.join(','));
         }
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0] // Not needed but extracted anyway
+        //var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0] // Not needed but extracted anyway
         return byteString;
     }
     const postData = async (url = '', inData) => {
@@ -425,7 +426,7 @@ const SmartNFTPortal = (props) => {
             newSrc = newSrc.join('');
         }
         let blob = dataURItoString(newSrc); 
-        blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head><meta charset=utf-8>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
+        blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head><meta charset=utf-8>'+librariesHTML+'</head><body style="text-align:center; background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
         src='data:text/html;charset=utf-8;base64,'+unicodeToBase64(blob)
     }
     useEffect(() => {
@@ -493,11 +494,12 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     }
     ret+="  parent.postMessage({request:'ready'},'*');\n";
     ret+="} else {\n";
+    ret+="  const p=parent;\n";
     ret+="  document.addEventListener('DOMContentLoaded', () => {\n";
     if (focus) { 
         ret+="      document.getElementById('focusTarget').focus();\n";
     }
-    ret+="      parent.postMessage({request:'ready'},'*');\n";
+    ret+="      p.postMessage({request:'ready'},'*');\n";
     ret+="  });\n";
     ret+="}\n";
     ret+='<'; // Again we put a linebreak here to work around webpack's weird handling of inline scripts
