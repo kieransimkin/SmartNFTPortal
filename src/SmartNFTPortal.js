@@ -487,15 +487,16 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     if (focus) { 
         ret+="  document.getElementById('focusTarget').focus();\n";
     }
-    ret+="  parent.postMessage({request:'ready'},'*');\n";
+    ret+="  // parent.postMessage({request:'ready'},'*');\n";
     ret+="} else {\n";
-    ret+="  const p=parent;\n";
-    ret+="  document.addEventListener('DOMContentLoaded', () => {\n";
+    ret+="  const readyHandler = () => {\n";
     if (focus) { 
         ret+="      document.getElementById('focusTarget').focus();\n";
     }
-    ret+="      p.postMessage({request:'ready'},'*');\n";
-    ret+="  });\n";
+    ret+="      parent.postMessage({request:'ready'},'*');\n";
+    ret+="      document.removeEventListener('DOMContentLoaded',readyHandler);\n";
+    ret+="}\n";
+    ret+="  document.addEventListener('DOMContentLoaded', readyHandler);\n";
     ret+="}\n";
     ret+='<'; // Again we put a linebreak here to work around webpack's weird handling of inline scripts
     ret+='/script>';
