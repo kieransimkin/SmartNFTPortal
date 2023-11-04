@@ -489,11 +489,12 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     }
     ret+="  // parent.postMessage({request:'ready'},'*');\n";
     ret+="} else {\n";
+    ret+="  const p = parent;\n";
     ret+="  const readyHandler = () => {\n";
     if (focus) { 
         ret+="      document.getElementById('focusTarget').focus();\n";
     }
-    ret+="      parent.postMessage({request:'ready'},'*');\n";
+    ret+="      p.postMessage({request:'ready'},'*');\n";
     ret+="      document.removeEventListener('DOMContentLoaded',readyHandler);\n";
     ret+="}\n";
     ret+="  document.addEventListener('DOMContentLoaded', readyHandler);\n";
