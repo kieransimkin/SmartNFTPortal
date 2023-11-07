@@ -1,6 +1,6 @@
 
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useReducer } from 'react';
 import * as React from "react";
 import { version } from  '../package.json'
 
@@ -19,6 +19,9 @@ const SmartNFTPortal = (props) => {
         onMouseOver,
         onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
     } = props;
+    const [hasResizeHandler, setHasResizeHandler] = useState(false);
+    
+    
     let loading = props.loading;
     if (!smartImports || !metadata || Object.keys(metadata).length === 0 || Object.keys(smartImports).length===0) loading=true;
     let loadingContent = props.loadingContent;
@@ -63,6 +66,18 @@ const SmartNFTPortal = (props) => {
     const doMouseout = () => { 
         if (onMouseOut) { 
             onMouseOut();
+        }
+    }
+    let timer = null;
+    const doResize = () => { 
+        if (!hasResizeHandler) { 
+            if (timer) { clearTimeout(timer); timer=null};
+            timer = setTimeout(() => { 
+                iFrameRef.current.contentWindow.postMessage({
+                    request: 'redraw'
+                }, '*');
+            },100)
+           
         }
     }
 
@@ -143,6 +158,8 @@ const SmartNFTPortal = (props) => {
                 return onGetUTXOs(e);
             case 'getMetadata':
                 return onGetMetadata(e);
+            case 'addResizeHandler': 
+                return addResizeHandler(e);
             case 'escape':
                 if (!iFrameRef.current || !iFrameRef.current.contentWindow) return; // user browsed away
                 iFrameRef.current.contentWindow.postMessage({request: 'blur'},'*'); 
@@ -199,6 +216,9 @@ const SmartNFTPortal = (props) => {
             default:
                 return;
         }
+    }
+    const addResizeHandler = (e) => { 
+        setHasResizeHandler(true);
     }
     const onGetTokenThumb = (e) => { 
         getData('/tokenImageFromUnit?unit='+e.data.unit+'&size=256').then((img) => { 
@@ -425,13 +445,14 @@ const SmartNFTPortal = (props) => {
             newSrc = newSrc.join('');
         }
         let blob = dataURItoString(newSrc); 
-        blob = '<html data-id="'+random+'" style="'+inactiveHtmlStyle+'"><head><meta charset=utf-8>'+librariesHTML+'</head><body style="text-align:center; background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
+        blob = '<html data-id="'+random+'" style="overflow: hidden; '+inactiveHtmlStyle+'"><head><meta charset=utf-8>'+librariesHTML+'</head><body style="background-color: transparent; padding: 0; margin: 0px; min-width: 100%; min-height: 100%;"}><input style="z-index:0;width:0px;position:absolute;opacity:0" id="focusTarget" />'+blob+'</body></html>';
         src='data:text/html;charset=utf-8;base64,'+unicodeToBase64(blob)
     }
     useEffect(() => {
         window.addEventListener("message", onMessage);
         window.addEventListener('blur', doFocus);
         window.addEventListener('focus', doBlur);
+        window.addEventListener('resize', doResize);
         if (iFrameRef.current) { 
             iFrameRef.current.addEventListener('mouseover', doMouseover);
             iFrameRef.current.addEventListener('mouseout', doMouseout);
@@ -440,12 +461,13 @@ const SmartNFTPortal = (props) => {
             window.removeEventListener("message",onMessage)
             window.removeEventListener('blur',doFocus);
             window.removeEventListener('focus',doBlur);
+            window.removeEventListener('resize', doResize);
             if (iFrameRef.current) { 
                 iFrameRef.current.removeEventListener('mouseover', doMouseover);
                 iFrameRef.current.removeEventListener('mouseout', doMouseout);
             }
         }
-    }, []);
+    }, [hasResizeHandler]);
     if (loading) { 
         return loadingContent;
     }
@@ -672,6 +694,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 } else if (e.data.request=='blur' && !e.data.error) { 
                     document.querySelector('html').style=${JSON.stringify(inactiveHtmlStyle||'')};
                 }
+                document.querySelector('html').style.overflow='hidden';
             }
             window.addEventListener('message',focusBlurHandler);
             ${onClick ? `window.addEventListener('click',(e) => { 
@@ -814,6 +837,20 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     });
                 } else { 
                     console.error('Attempt to access UTXOs that haven\\'t been imported');
+                }
+            }
+            var _eventListener = EventTarget.prototype.addEventListener;
+            EventTarget.prototype.addEventListener = function(type, fn, capture) { 
+                this._eventListener = _eventListener;
+                this._eventListener(type, fn, capture);
+                const messageHandler = (e) => { 
+                    if (e.data.request=='redraw') { 
+                        location.reload();
+                    }
+                }
+                _eventListener('message',messageHandler);
+                if (type=='resize') { 
+                    parent.postMessage({request:'addResizeHandler'},'*');
                 }
             }
         <`;
