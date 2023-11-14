@@ -17,7 +17,7 @@ const SmartNFTPortal = (props) => {
         onMouseOut, 
         onLink,
         onMouseOver,
-        onClick, onMouseDown, onMouseUp, onMouseMove,onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
+        onClick, onMouseDown, onMouseUp, onMouseMove, onContextMenu,onDblClick,onTouchStart,onTouchEnd,onTouchMove,onTouchCancel, onReady, onScroll
     } = props;
     const [hasResizeHandler, setHasResizeHandler] = useState(false);
     
@@ -696,6 +696,56 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 }
                 document.querySelector('html').style.overflow='hidden';
             }
+            const getFormattedMouseEvent = (e) => { 
+                let ret = {};
+                // Generate a JSON version of the event.
+
+                if (e) {
+                    ret = {
+                    eventName: e.toString(),
+                    altKey: e.altKey,
+                    bubbles: e.bubbles,
+                    button: e.button,
+                    buttons: e.buttons,
+                    cancelBubble: e.cancelBubble,
+                    cancelable: e.cancelable,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                    composed: e.composed,
+                    ctrlKey: e.ctrlKey,
+                    currentTarget: e.currentTarget ? e.currentTarget.outerHTML : null,
+                    defaultPrevented: e.defaultPrevented,
+                    detail: e.detail,
+                    eventPhase: e.eventPhase,
+                    fromElement: e.fromElement ? e.fromElement.outerHTML : null,
+                    isTrusted: e.isTrusted,
+                    layerX: e.layerX,
+                    layerY: e.layerY,
+                    metaKey: e.metaKey,
+                    movementX: e.movementX,
+                    movementY: e.movementY,
+                    offsetX: e.offsetX,
+                    offsetY: e.offsetY,
+                    pageX: e.pageX,
+                    pageY: e.pageY,
+                    relatedTarget: e.relatedTarget ? e.relatedTarget.outerHTML : null,
+                    returnValue: e.returnValue,
+                    screenX: e.screenX,
+                    screenY: e.screenY,
+                    shiftKey: e.shiftKey,
+                    sourceCapabilities: e.sourceCapabilities ? e.sourceCapabilities.toString() : null,
+                    target: e.target ? e.target.outerHTML : null,
+                    timeStamp: e.timeStamp,
+                    toElement: e.toElement ? e.toElement.outerHTML : null,
+                    type: e.type,
+                    view: e.view ? e.view.toString() : null,
+                    which: e.which,
+                    x: e.x,
+                    y: e.y
+                    };
+                }
+                return ret;
+            }
             window.addEventListener('message',focusBlurHandler);
             ${onClick ? `window.addEventListener('click',(e) => { 
                 parent.postMessage({request:'click',event:JSON.stringify(e)},'*');
@@ -710,7 +760,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             });
             `:''}
             ${onMouseMove ? `window.addEventListener('mousemove',(e) => { 
-                parent.postMessage({request:'mouseMove',event:JSON.stringify(e)},'*');
+                parent.postMessage({request:'mouseMove',event:getFormattedMouseEvent(e)},'*');
             });
             `:''}
             ${onContextMenu ? `window.addEventListener('contextmenu',(e) => { 
