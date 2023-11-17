@@ -106,6 +106,8 @@ const SmartNFTPortal = (props) => {
         const [first, ...rest] = dataURI.split(',');
         if (first.includes('base64')) { 
             byteString = base64ToUnicode(rest.join(','));
+        } else if (dataURI.split(',')[0].match(/utf8/i)) { 
+            byteString = dataURI.split(',')[1];
         } else { 
             byteString = decodeURIComponent(rest.join(','));
         }
