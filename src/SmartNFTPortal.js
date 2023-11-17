@@ -73,6 +73,7 @@ const SmartNFTPortal = (props) => {
         if (!hasResizeHandler) { 
             if (timer) { clearTimeout(timer); timer=null};
             timer = setTimeout(() => { 
+                if (!iFrameRef.current) return;
                 iFrameRef.current.contentWindow.postMessage({
                     request: 'redraw'
                 }, '*');
@@ -107,7 +108,7 @@ const SmartNFTPortal = (props) => {
         if (first.includes('base64')) { 
             byteString = base64ToUnicode(rest.join(','));
         } else if (first.match(/utf8/i)) {
-            byteString = rest.join(',');
+            byteString = decodeURIComponent(rest.join(','));
         } else { 
             byteString = decodeURIComponent(rest.join(','));
         }
