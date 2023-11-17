@@ -509,7 +509,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
     if (focus) { 
         ret+="  document.getElementById('focusTarget').focus();\n";
     }
-    ret+="  // parent.postMessage({request:'ready'},'*');\n";
+    ret+="  // window.parent.postMessage({request:'ready'},'*');\n";
     ret+="} else {\n";
     ret+="  const p = parent;\n";
     ret+="  const readyHandler = () => {\n";
@@ -567,7 +567,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getTokenThumb',unit},'*');
+                window.parent.postMessage({request:'getTokenThumb',unit},'*');
             });
         }
         window.cardano.nft.getTokenThumbUrl = async (unit) => { 
@@ -585,7 +585,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getTokenImage',unit},'*')
+                window.parent.postMessage({request:'getTokenImage',unit},'*')
             });
         }
         window.cardano.nft.getTokenImageUrl = async (unit) => { 
@@ -611,7 +611,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
+                window.parent.postMessage({request:'getFile',id,unit, metadata:window.cardano.nft._data.metadata},'*');
             
             });
         }
@@ -647,7 +647,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getFileObject',id,unit, metadata:window.cardano.nft._data.metadata},'*');
+                window.parent.postMessage({request:'getFileObject',id,unit, metadata:window.cardano.nft._data.metadata},'*');
             });
         }
         window.cardano.nft.getFileUrl = async (id=null, unit='own') => { 
@@ -675,7 +675,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                     }
                 }
                 window.addEventListener('message',messageHandler);
-                parent.postMessage({request:'getMetadata', unit},'*')
+                window.parent.postMessage({request:'getMetadata', unit},'*')
             });
         }
         `;
@@ -685,7 +685,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             ${filesAPIJS}
             window.addEventListener('keyup',(e) => { 
                 if (e.key==="Escape") { 
-                    parent.postMessage({request:'escape'},'*');
+                    window.parent.postMessage({request:'escape'},'*');
                 }
             });
             const focusBlurHandler = (e) => { 
@@ -748,51 +748,51 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
             }
             window.addEventListener('message',focusBlurHandler);
             ${onClick ? `window.addEventListener('click',(e) => { 
-                parent.postMessage({request:'click',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'click',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseDown ? `window.addEventListener('mousedown',(e) => { 
-                parent.postMessage({request:'mouseDown',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'mouseDown',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseUp ? `window.addEventListener('mouseup',(e) => { 
-                parent.postMessage({request:'mouseUp',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'mouseUp',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onMouseMove ? `window.addEventListener('mousemove',(e) => { 
-                parent.postMessage({request:'mouseMove',event:getFormattedMouseEvent(e)},'*');
+                window.parent.postMessage({request:'mouseMove',event:getFormattedMouseEvent(e)},'*');
             });
             `:''}
             ${onContextMenu ? `window.addEventListener('contextmenu',(e) => { 
-                parent.postMessage({request:'contextMenu',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'contextMenu',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onDblClick ? `window.addEventListener('dblclick',(e) => { 
-                parent.postMessage({request:'dblClick',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'dblClick',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchStart ? `window.addEventListener('touchstart',(e) => { 
-                parent.postMessage({request:'touchStart',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'touchStart',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchEnd ? `window.addEventListener('touchend',(e) => { 
-                parent.postMessage({request:'touchEnd',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'touchEnd',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchMove ? `window.addEventListener('touchmove',(e) => { 
-                parent.postMessage({request:'touchMove',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'touchMove',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onTouchCancel ? `window.addEventListener('touchcancel',(e) => { 
-                parent.postMessage({request:'touchCancel',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'touchCancel',event:JSON.stringify(e)},'*');
             });
             `:''}
             ${onScroll ? `document.addEventListener('wheel',(e) => { 
-                parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
+                window.parent.postMessage({request:'scroll',event:JSON.stringify(e)},'*');
             });
             `:''}
             window.cardano.nft.linkTo = async(url,event) => { 
-                parent.postMessage({request:'link', url, event},'*');
+                window.parent.postMessage({request:'link', url, event},'*');
             }
             window.cardano.nft.getOwner = async () => { 
                 return window.cardano.nft._data.ownerAddr;
@@ -835,7 +835,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                             }
                         }
                         window.addEventListener('message',messageHandler);
-                        parent.postMessage({request:'getTransactions', which, page},'*');
+                        window.parent.postMessage({request:'getTransactions', which, page},'*');
                     });
                 } else { 
                     console.error('Attempt to access transactions that haven\\'t been imported');
@@ -859,7 +859,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                             }
                         }
                         window.addEventListener('message',messageHandler);
-                        parent.postMessage({request:'getTokens', which, page}, '*');
+                        window.parent.postMessage({request:'getTokens', which, page}, '*');
                     });
                 } else { 
                     console.error('Attempt to access tokens that haven\\'t been imported');
@@ -883,7 +883,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                             }
                         }
                         window.addEventListener('message',messageHandler);
-                        parent.postMessage({request:'getUTXOs', which, page}, '*');
+                        window.parent.postMessage({request:'getUTXOs', which, page}, '*');
                     });
                 } else { 
                     console.error('Attempt to access UTXOs that haven\\'t been imported');
@@ -900,7 +900,7 @@ const getPortalAPIScripts = (smartImports, metadata, props) => {
                 }
                 _eventListener('message',messageHandler);
                 if (type=='resize') { 
-                    parent.postMessage({request:'addResizeHandler'},'*');
+                    window.parent.postMessage({request:'addResizeHandler'},'*');
                 }
             }
         <`;
